@@ -1,7 +1,7 @@
 // lưu chi tiết nhập khẩu
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const importDetailSchema = new mongooes.Schema(
+const importDetailSchema = new mongoose.Schema(
     {
         priceEntry: {type: Number, required: true}, 
         // giá nhập bên sản phẩm nếu giá nhập ở đây khác giá nhập ở bển
@@ -10,12 +10,12 @@ const importDetailSchema = new mongooes.Schema(
 
         //khoa ngoai
         import: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Import',
             require: true
         },
         product: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Product',
             require: true
         },
@@ -25,5 +25,5 @@ const importDetailSchema = new mongooes.Schema(
     }
 );
 
-const ImportDetail = mongooes.model('ImportDetail', importDetailSchema);
+const ImportDetail = mongoose.model('ImportDetail', importDetailSchema);
 module.exports = ImportDetail;

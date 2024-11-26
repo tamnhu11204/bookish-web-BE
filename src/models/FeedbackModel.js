@@ -1,7 +1,7 @@
 //lưu đánh giá
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const feedbackSchema = new mongooes.Schema(
+const feedbackSchema = new mongoose.Schema(
     {
         star: {type: Number, require: true},
         content: {type: Number},
@@ -9,12 +9,12 @@ const feedbackSchema = new mongooes.Schema(
 
         //khóa ngoại
         user: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'User',
             require: true
         },
         product: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Product',
             require: true
         },
@@ -24,5 +24,5 @@ const feedbackSchema = new mongooes.Schema(
     }
 );
 
-const Feedback = mongooes.model('Feedback', feedbackSchema);
+const Feedback = mongoose.model('Feedback', feedbackSchema);
 module.exports = Feedback;

@@ -1,16 +1,16 @@
 //lưu các mốc thời gian của đơn hàng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const orderActiveListSchema = new mongooes.Schema(
+const orderActiveListSchema = new mongoose.Schema(
     {
         //khóa ngoại
         active: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Active',
             require: true
         },
         active: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Active',
             require: true
         },
@@ -20,5 +20,5 @@ const orderActiveListSchema = new mongooes.Schema(
     }
 );
 
-const OrderActiveList = mongooes.model('OrderActiveList', orderActiveListSchema);
+const OrderActiveList = mongoose.model('OrderActiveList', orderActiveListSchema);
 module.exports = OrderActiveList;

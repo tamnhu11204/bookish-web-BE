@@ -1,18 +1,18 @@
 //lưu giỏ hàng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const cartSchema = new mongooes.Schema(
+const cartSchema = new mongoose.Schema(
     {
         quantity: {type: Number, require: true},
 
         //khóa ngoại
         user: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'User',
             require: true
         },
         product: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Product',
             require: true
         },
@@ -22,5 +22,5 @@ const cartSchema = new mongooes.Schema(
     }
 );
 
-const Cart = mongooes.model('Cart', cartSchema);
+const Cart = mongoose.model('Cart', cartSchema);
 module.exports = Cart;

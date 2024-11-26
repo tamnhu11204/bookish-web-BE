@@ -1,7 +1,7 @@
 // lưu các sách bán chạy trong tháng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const monthlyBestSellerSchema = new mongooes.Schema(
+const monthlyBestSellerSchema = new mongoose.Schema(
     {
         month: {type: Number, required: true},
         year: {type: Number, required: true},
@@ -9,7 +9,7 @@ const monthlyBestSellerSchema = new mongooes.Schema(
 
         //khóa ngoại
         product: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Product',
             require: true
         },
@@ -19,6 +19,6 @@ const monthlyBestSellerSchema = new mongooes.Schema(
     }
 );
 
-const MonthlyBestSeller = mongooes.model('MonthlyBestSeller', monthlyBestSellerSchema);
+const MonthlyBestSeller = mongoose.model('MonthlyBestSeller', monthlyBestSellerSchema);
 module.exports = MonthlyBestSeller;
 

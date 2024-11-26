@@ -1,7 +1,7 @@
 //lưu phương thức vận chuyển
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const shippingMethodSchema = new mongooes.Schema(
+const shippingMethodSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -12,5 +12,5 @@ const shippingMethodSchema = new mongooes.Schema(
     }
 );
 
-const ShippingMethod = mongooes.model('ShippingMethod', shippingMethodSchema);
+const ShippingMethod = mongoose.model('ShippingMethod', shippingMethodSchema);
 module.exports = ShippingMethod;

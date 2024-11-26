@@ -1,7 +1,7 @@
 //lưu các loại trạng thái của đơn hàng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const activeSchema = new mongooes.Schema(
+const activeSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -11,5 +11,5 @@ const activeSchema = new mongooes.Schema(
     }
 );
 
-const Active = mongooes.model('Active', activeSchema);
+const Active = mongoose.model('Active', activeSchema);
 module.exports = Active;

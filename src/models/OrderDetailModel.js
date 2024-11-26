@@ -1,7 +1,7 @@
 //lưu chi tiết đơn hàng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const orderDetailSchema = new mongooes.Schema(
+const orderDetailSchema = new mongoose.Schema(
     {
         price: {type: Number, require: true}, //giá lúc bán
         quantity: {type: Number, require: true},
@@ -9,12 +9,12 @@ const orderDetailSchema = new mongooes.Schema(
 
         //khóa ngoại
         order: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Order',
             require: true
         },
         product: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Product',
             require: true
         },
@@ -24,5 +24,5 @@ const orderDetailSchema = new mongooes.Schema(
     }
 );
 
-const OrderDetail = mongooes.model('OrderDetail', orderDetailSchema);
+const OrderDetail = mongoose.model('OrderDetail', orderDetailSchema);
 module.exports = OrderDetail;

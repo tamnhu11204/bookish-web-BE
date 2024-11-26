@@ -1,7 +1,7 @@
 //lưu đặt hàng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const orderSchema = new mongooes.Schema(
+const orderSchema = new mongoose.Schema(
     {
         totalMoney: {type: Number, required: true},
         phone: {type: String, required: true},
@@ -12,28 +12,28 @@ const orderSchema = new mongooes.Schema(
 
         //khoa ngoai
         user: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'User',
             require: true
         },
         shippingMethod: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'ShippingMethod',
             require: true
         },
         paymentMethod: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'PaymentMethod',
             require: true
         },
         promotion: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Promotion',
             require: true
         },
         //lưu trạng thái đơn hàng hiện tại
         orderActive: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'OrderActive',
             require: true
         },
@@ -43,5 +43,5 @@ const orderSchema = new mongooes.Schema(
     }
 );
 
-const Order = mongooes.model('Order', orderSchema);
+const Order = mongoose.model('Order', orderSchema);
 module.exports = Order;

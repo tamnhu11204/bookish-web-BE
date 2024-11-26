@@ -1,13 +1,13 @@
 //lưu các ảnh của đánh giá
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const feedbackImgsSchema = new mongooes.Schema(
+const feedbackImgsSchema = new mongoose.Schema(
     {
         img: {type: String, required: true},
 
         //khoa ngoai
         feedback: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Feedback',
             require: true
         },
@@ -17,5 +17,5 @@ const feedbackImgsSchema = new mongooes.Schema(
     }
 );
 
-const FeedbackImgs = mongooes.model('FeedbackImgs', feedbackImgsSchema);
+const FeedbackImgs = mongoose.model('FeedbackImgs', feedbackImgsSchema);
 module.exports = FeedbackImgs;

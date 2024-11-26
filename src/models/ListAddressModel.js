@@ -1,28 +1,28 @@
 // lưu các đại chỉ của người dùng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const listAddressSchema = new mongooes.Schema(
+const listAddressSchema = new mongoose.Schema(
     {
         specificAddress: {type: String, required: true},
 
         //khóa ngoại
         user: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'User',
             require: true
         },
         province: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Province',
             require: true
         },
         district: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'District',
             require: true
         },
         commune: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Commune',
             require: true
         }
@@ -32,6 +32,6 @@ const listAddressSchema = new mongooes.Schema(
     }
 );
 
-const ListAddress = mongooes.model('ListAddress', listAddressSchema);
+const ListAddress = mongoose.model('ListAddress', listAddressSchema);
 module.exports = ListAddress;
 

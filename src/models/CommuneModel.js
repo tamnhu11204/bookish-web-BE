@@ -1,12 +1,12 @@
 //lưu xã
 //lưu huyện
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const communeSchema = new mongooes.Schema(
+const communeSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         district: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'District',
             require: true
         }
@@ -16,5 +16,5 @@ const communeSchema = new mongooes.Schema(
     }
 );
 
-const Commune = mongooes.model('Commune', communeSchema);
+const Commune = mongoose.model('Commune', communeSchema);
 module.exports = Commune;

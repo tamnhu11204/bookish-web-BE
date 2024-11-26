@@ -1,7 +1,7 @@
 //lưu danh mục sản phẩm
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const categorySchema = new mongooes.Schema(
+const categorySchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -13,5 +13,5 @@ const categorySchema = new mongooes.Schema(
     }
 );
 
-const Category = mongooes.model('Category', categorySchema);
+const Category = mongoose.model('Category', categorySchema);
 module.exports = Category;

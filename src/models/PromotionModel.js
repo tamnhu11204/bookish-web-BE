@@ -1,7 +1,7 @@
 //lưu khuyến mãi
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const promotionSchema = new mongooes.Schema(
+const promotionSchema = new mongoose.Schema(
     {
         value: {type: Number, required: true},
         start: {type: Date, required: true},
@@ -14,5 +14,5 @@ const promotionSchema = new mongooes.Schema(
     }
 );
 
-const Promotion = mongooes.model('Promotion', promotionSchema);
+const Promotion = mongoose.model('Promotion', promotionSchema);
 module.exports = Promotion;

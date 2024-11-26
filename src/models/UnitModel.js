@@ -1,7 +1,7 @@
 //lưu đơn vị sách: cuốn, quyển,..
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const unitSchema = new mongooes.Schema(
+const unitSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -11,5 +11,5 @@ const unitSchema = new mongooes.Schema(
     }
 );
 
-const Unit = mongooes.model('Unit', unitSchema);
+const Unit = mongoose.model('Unit', unitSchema);
 module.exports = Unit;

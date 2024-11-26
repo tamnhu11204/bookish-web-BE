@@ -1,7 +1,7 @@
 //lưu phương thức thanh toán
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const paymentMethodSchema = new mongooes.Schema(
+const paymentMethodSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -11,5 +11,5 @@ const paymentMethodSchema = new mongooes.Schema(
     }
 );
 
-const PaymentMethod = mongooes.model('PaymentMethod', paymentMethodSchema);
+const PaymentMethod = mongoose.model('PaymentMethod', paymentMethodSchema);
 module.exports = PaymentMethod;

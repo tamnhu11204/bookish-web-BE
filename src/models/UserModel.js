@@ -1,7 +1,7 @@
 //lưu người dùng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const userSchema = new mongooes.Schema(
+const userSchema = new mongoose.Schema(
     {
         email: {type: String, required: true, unique: true},
         name: {type: String, required: true},
@@ -14,7 +14,7 @@ const userSchema = new mongooes.Schema(
 
         //khóa ngoại
         gender: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Gender',
             require: true
         },
@@ -24,5 +24,5 @@ const userSchema = new mongooes.Schema(
     }
 );
 
-const User = mongooes.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 module.exports = User;

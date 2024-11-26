@@ -1,7 +1,7 @@
 //lưu nhập hàng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const importSchema = new mongooes.Schema(
+const importSchema = new mongoose.Schema(
     {
         date: {type: Date, required: true},
         totalMoney: {type: Number, required: true},
@@ -9,7 +9,7 @@ const importSchema = new mongooes.Schema(
 
         //khoa ngoai
         supplier: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Supplier',
             require: true
         },
@@ -19,5 +19,5 @@ const importSchema = new mongooes.Schema(
     }
 );
 
-const Import = mongooes.model('Import', importSchema);
+const Import = mongoose.model('Import', importSchema);
 module.exports = Import;

@@ -1,7 +1,7 @@
 //lưu hình thức sách : bìa cứng, bìa mềm,...
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const formatSchema = new mongooes.Schema(
+const formatSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -11,5 +11,5 @@ const formatSchema = new mongooes.Schema(
     }
 );
 
-const Format = mongooes.model('Format', formatSchema);
+const Format = mongoose.model('Format', formatSchema);
 module.exports = Format;

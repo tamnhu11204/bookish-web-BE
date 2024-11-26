@@ -1,7 +1,7 @@
 //lưu ncc
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const supplierSchema = new mongooes.Schema(
+const supplierSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -12,17 +12,17 @@ const supplierSchema = new mongooes.Schema(
 
         //khóa ngoại
         province: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Province',
             require: true
         },
         district: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'District',
             require: true
         },
         commune: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Commune',
             require: true
         }
@@ -32,5 +32,5 @@ const supplierSchema = new mongooes.Schema(
     }
 );
 
-const Supplier = mongooes.model('Supplier', supplierSchema);
+const Supplier = mongoose.model('Supplier', supplierSchema);
 module.exports = Supplier;

@@ -1,7 +1,7 @@
 //lưu sách
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const productSchema = new mongooes.Schema(
+const productSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         slug: {type: String, required: true, unique: true},
@@ -26,28 +26,28 @@ const productSchema = new mongooes.Schema(
 
         //khoa ngoai
         publisher: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Publisher',
             require: true
         },
         language: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Language',
         },
         format: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Format',
         },
         series: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Series',
         },
         unit: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Unit',
         },
         category: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Category',
             require: true
         }
@@ -57,5 +57,5 @@ const productSchema = new mongooes.Schema(
     }
 );
 
-const Product = mongooes.model('Product', productSchema);
+const Product = mongoose.model('Product', productSchema);
 module.exports = Product;

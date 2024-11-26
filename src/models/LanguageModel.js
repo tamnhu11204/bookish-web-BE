@@ -1,7 +1,7 @@
 //lưu ngôn ngữ sách: vie, eng, vie-eng,...
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const languageSchema = new mongooes.Schema(
+const languageSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -11,5 +11,5 @@ const languageSchema = new mongooes.Schema(
     }
 );
 
-const Language = mongooes.model('Language', languageSchema);
+const Language = mongoose.model('Language', languageSchema);
 module.exports = Language;

@@ -1,16 +1,16 @@
 //lưu danh sách sp yêu thích
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const favoriteProductSchema = new mongooes.Schema(
+const favoriteProductSchema = new mongoose.Schema(
     {
         //khóa ngoại
         user: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'User',
             require: true
         },
         product: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Product',
             require: true
         },
@@ -20,5 +20,5 @@ const favoriteProductSchema = new mongooes.Schema(
     }
 );
 
-const FavoriteProduct = mongooes.model('FavoriteProduct', favoriteProductSchema);
+const FavoriteProduct = mongoose.model('FavoriteProduct', favoriteProductSchema);
 module.exports = FavoriteProduct;

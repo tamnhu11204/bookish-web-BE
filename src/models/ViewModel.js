@@ -1,16 +1,16 @@
 //lưu danh sách sp đã xem
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const viewSchema = new mongooes.Schema(
+const viewSchema = new mongoose.Schema(
     {
         //khóa ngoại
         user: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'User',
             require: true
         },
         product: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Product',
             require: true
         },
@@ -20,5 +20,5 @@ const viewSchema = new mongooes.Schema(
     }
 );
 
-const View = mongooes.model('View', viewSchema);
+const View = mongoose.model('View', viewSchema);
 module.exports = View;

@@ -1,13 +1,13 @@
 //lưu các ảnh của sách
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const productImgsSchema = new mongooes.Schema(
+const productImgsSchema = new mongoose.Schema(
     {
         img: {type: String, required: true},
 
         //khoa ngoai
         product: {
-            type: mongooes.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.Objectid, 
             ref: 'Product',
             require: true
         },
@@ -17,5 +17,5 @@ const productImgsSchema = new mongooes.Schema(
     }
 );
 
-const ProductImgs = mongooes.model('ProductImgs', productImgsSchema);
+const ProductImgs = mongoose.model('ProductImgs', productImgsSchema);
 module.exports = ProductImgs;

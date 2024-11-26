@@ -1,7 +1,7 @@
 // lưu các sách bán chạy trong tháng
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const monthlyRevenueSchema = new mongooes.Schema(
+const monthlyRevenueSchema = new mongoose.Schema(
     {
         month: {type: Number, required: true},
         year: {type: Number, required: true},
@@ -12,6 +12,6 @@ const monthlyRevenueSchema = new mongooes.Schema(
     }
 );
 
-const MonthlyRevenue = mongooes.model('MonthlyRevenue', monthlyRevenueSchema);
+const MonthlyRevenue = mongoose.model('MonthlyRevenue', monthlyRevenueSchema);
 module.exports = MonthlyRevenue;
 

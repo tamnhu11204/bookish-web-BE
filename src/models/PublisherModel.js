@@ -1,7 +1,7 @@
 //lưu nxb
-const mongooes = require('mongooes')
+const mongoose = require('mongoose')
 
-const publisherSchema = new mongooes.Schema(
+const publisherSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
@@ -12,5 +12,5 @@ const publisherSchema = new mongooes.Schema(
     }
 );
 
-const Publisher = mongooes.model('Publisher', publisherSchema);
+const Publisher = mongoose.model('Publisher', publisherSchema);
 module.exports = Publisher;
