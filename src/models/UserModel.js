@@ -13,11 +13,7 @@ const userSchema = new mongoose.Schema(
         isAdmin: {type: Boolean, required: true},
 
         //khóa ngoại
-        gender: {
-            type: mongoose.Schema.Types.Objectid, 
-            ref: 'Gender',
-            require: true
-        },
+        gender: { type: String, enum: ['male', 'female', 'other'], default: 'other' },
     },
     {
         timestamps: true,
