@@ -4,7 +4,6 @@ const mongoose = require('mongoose')
 const productSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
-        slug: {type: String, required: true, unique: true},
         author: {type: String, required: true},
         publishDate: {type: Date},
         weight: {type: Number},
@@ -15,7 +14,7 @@ const productSchema = new mongoose.Schema(
         description: {type: String},
         price: {type: Number, required: true},
         priceEntry: {type: Number, required: true},
-        sale: {type: Number},
+        discount: {type: Number, required: true},
         stock: {type: Number, required: true},
         img: {type: String},
         star: {type: Number, required: true},
@@ -25,32 +24,32 @@ const productSchema = new mongoose.Schema(
         view: {type: Number, required: true},
 
         //khoa ngoai
-        publisher: {
-            type: mongoose.Schema.Types.Objectid, 
-            ref: 'Publisher',
-            require: true
-        },
-        language: {
-            type: mongoose.Schema.Types.Objectid, 
-            ref: 'Language',
-        },
-        format: {
-            type: mongoose.Schema.Types.Objectid, 
-            ref: 'Format',
-        },
-        series: {
-            type: mongoose.Schema.Types.Objectid, 
-            ref: 'Series',
-        },
-        unit: {
-            type: mongoose.Schema.Types.Objectid, 
-            ref: 'Unit',
-        },
-        category: {
-            type: mongoose.Schema.Types.Objectid, 
-            ref: 'Category',
-            require: true
-        }
+        // publisher: {
+        //     type: mongoose.Schema.Types.Objectid, 
+        //     ref: 'Publisher',
+        //     require: true
+        // },
+        // language: {
+        //     type: mongoose.Schema.Types.Objectid, 
+        //     ref: 'Language',
+        // },
+        // format: {
+        //     type: mongoose.Schema.Types.Objectid, 
+        //     ref: 'Format',
+        // },
+        // series: {
+        //     type: mongoose.Schema.Types.Objectid, 
+        //     ref: 'Series',
+        // },
+        // unit: {
+        //     type: mongoose.Schema.Types.Objectid, 
+        //     ref: 'Unit',
+        // },
+        // category: {
+        //     type: mongoose.Schema.Types.Objectid, 
+        //     ref: 'Category',
+        //     require: true
+        //}
     },
     {
         timestamps: true,
