@@ -103,7 +103,7 @@ const updateUser = (id, data) => {
             resolve({
                 status: 'OK',
                 message: 'Success',
-                data: updateUser
+                data: updatedUser
             });
         } catch (e) {
             reject(e);
@@ -116,7 +116,6 @@ const deleteUser = (id) => {
 
         try {
             const checkUser = await User.findOne({ _id: id })
-            //console.log('checkUser', checkUser)
             if (checkUser === null) {
                 resolve({
                     status: 'OK',
@@ -124,7 +123,7 @@ const deleteUser = (id) => {
                 })
             }
 
-            //await User.findByIdAndDelete(id)
+            await User.findByIdAndDelete(id)
             resolve({
                 status: 'OK',
                 message: 'Delete sucessfully',

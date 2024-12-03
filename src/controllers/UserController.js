@@ -77,7 +77,6 @@ const updateUser = async (req, res) => {
                 message: 'The userID is required'
             });
         }
-        console.log('userID',userID)
         // Truyền dữ liệu req.body vào UserService
         const response = await UserService.updateUser(userID, data);
         return res.status(200).json(response);
