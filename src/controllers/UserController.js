@@ -4,23 +4,23 @@ const JwtService = require('../services/JwtService');
 const createUser = async (req, res) => {
     try {
         const {
-            email, name, password, phone, img, birthday, active, isAdmin, gender
+            email, name, password, phone, birthday
         } = req.body;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const isCheckEmail = emailRegex.test(email);
 
-        if (!email || !name || !password || !phone || !img || !birthday || active == null || isAdmin == null || !gender) {
+        if (!email || !name || !password || !phone|| !birthday) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The input is required'
+                message: 'Vui lòng điền đầy đủ thông tin1.'
             });
         }
 
         if (!isCheckEmail) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'Invalid email format'
+                message: 'Email không hợp lệ! Vui lòng nhập lại.'
             });
         }
 
@@ -46,14 +46,14 @@ const loginUser = async (req, res) => {
         if (!email || !password ) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'The input is required'
+                message: 'Vui lòng điền đầy đủ thông tin.'
             });
         }
 
         if (!isCheckEmail) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'Invalid email format'
+                message: 'Email không hợp lệ! Vui lòng nhập lại.'
             });
         }
 

@@ -4,15 +4,15 @@ const { generalAccessToken, generalRefreshToken } = require('./JwtService');
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { email, name, password, phone, img, birthday, active, isAdmin, gender } = newUser;
+        const { email, name, password, phone, birthday } = newUser;
         try {
             const checkUser = await User.findOne({
                 email: email
             })
             if (checkUser !== null) {
                 resolve({
-                    status: 'OK',
-                    message: 'The email is already'
+                    status: 'ERR',
+                    message: 'Email đã tồn tại! Vui lòng dùng Email khác.'
                 })
             }
             const hash = bcrypt.hashSync(password, 10)
@@ -22,11 +22,7 @@ const createUser = (newUser) => {
                 name,
                 password: hash,
                 phone,
-                img,
-                birthday,
-                active,
-                isAdmin,
-                gender
+                birthday
             });
             if (createdUser) {
                 resolve({
@@ -43,23 +39,23 @@ const createUser = (newUser) => {
 
 const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
-        const { email, name, password, phone, img, birthday, active, isAdmin, gender } = userLogin;
+        const { email, password } = userLogin;
         try {
             const checkUser = await User.findOne({
                 email: email
             })
             if (checkUser === null) {
                 resolve({
-                    status: 'OK',
-                    message: 'The user is not defined'
+                    status: 'ERR',
+                    message: 'Email không tồn tại!'
                 })
             }
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
             console.log('comparePassword', comparePassword)
             if (!comparePassword) {
                 resolve({
-                    status: 'OK',
-                    message: 'The password or user is incorrect',
+                    status: 'ERR',
+                    message: 'Mật khẩu không chính xác!',
                 });
             }
 

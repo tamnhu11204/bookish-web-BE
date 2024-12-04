@@ -9,10 +9,8 @@ const userSchema = new mongoose.Schema(
         phone: {type: String, required: true},
         img: {type: String},
         birthday: {type: Date, required: true},
-        active: {type: Boolean, required: true},
-        isAdmin: {type: Boolean, required: true},
-
-        //khóa ngoại
+        active: {type: Boolean, default: true},
+        isAdmin: {type: Boolean, default: false},
         gender: { type: String, enum: ['male', 'female', 'other'], default: 'other' },
     },
     {
