@@ -13,7 +13,7 @@ const createUser = async (req, res) => {
         if (!email || !name || !password || !phone|| !birthday) {
             return res.status(200).json({
                 status: 'ERR',
-                message: 'Vui lòng điền đầy đủ thông tin1.'
+                message: 'Vui lòng điền đầy đủ thông tin.'
             });
         }
 
@@ -59,7 +59,13 @@ const loginUser = async (req, res) => {
 
         // Truyền dữ liệu req.body vào UserService
         const response = await UserService.loginUser(req.body);
-        return res.status(200).json(response);
+        const {refresh_token, ...newResponse} = response
+        res.cookie('refresh_token', refresh_token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'strict'
+        })
+        return res.status(200).json(newResponse);
     } catch (e) {
         return res.status(404).json({
             message: e.message
@@ -138,14 +144,16 @@ const getDetailUser = async (req, res) => {
 };
 
 const refreshToken = async (req, res) => {
+    console.log('cookie', req.cookies.refresh_token)
     try {
-        const token=req.headers.token.split(' ')[1]
-        if (!token){
-            return res.status(200).json({
+        const token=req.cookies.refresh_token
+        if (!token) {
+            return res.status(401).json({
                 status: 'ERR',
                 message: 'The token is required'
             });
         }
+        
         // Truyền dữ liệu req.body vào UserService
         const response = await JwtService.refreshTokenJwtService(token);
         return res.status(200).json(response);
