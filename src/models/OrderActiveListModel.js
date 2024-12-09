@@ -5,12 +5,12 @@ const orderActiveListSchema = new mongoose.Schema(
     {
         //khóa ngoại
         active: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Active',
             require: true
         },
         active: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Active',
             require: true
         },

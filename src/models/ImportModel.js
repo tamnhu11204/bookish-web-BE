@@ -9,7 +9,7 @@ const importSchema = new mongoose.Schema(
 
         //khoa ngoai
         supplier: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Supplier',
             require: true
         },

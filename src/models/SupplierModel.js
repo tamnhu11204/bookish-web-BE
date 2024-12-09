@@ -12,17 +12,17 @@ const supplierSchema = new mongoose.Schema(
 
         //khóa ngoại
         province: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Province',
             require: true
         },
         district: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'District',
             require: true
         },
         commune: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Commune',
             require: true
         }

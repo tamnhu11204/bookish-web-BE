@@ -9,12 +9,12 @@ const orderDetailSchema = new mongoose.Schema(
 
         //khóa ngoại
         order: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Order',
             require: true
         },
         product: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Product',
             require: true
         },

@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema(
         publishDate: {type: Date},
         weight: {type: Number},
         height: {type: Number},
-        width: {type: Number},
+        wIdth: {type: Number},
         length: {type: Number},
         page: {type: Number},
         description: {type: String},
@@ -25,28 +25,28 @@ const productSchema = new mongoose.Schema(
 
         //khoa ngoai
         // publisher: {
-        //     type: mongoose.Schema.Types.Objectid, 
+        //     type: mongoose.Schema.Types.ObjectId, 
         //     ref: 'Publisher',
         //     require: true
         // },
         // language: {
-        //     type: mongoose.Schema.Types.Objectid, 
+        //     type: mongoose.Schema.Types.ObjectId, 
         //     ref: 'Language',
         // },
         // format: {
-        //     type: mongoose.Schema.Types.Objectid, 
+        //     type: mongoose.Schema.Types.ObjectId, 
         //     ref: 'Format',
         // },
         // series: {
-        //     type: mongoose.Schema.Types.Objectid, 
+        //     type: mongoose.Schema.Types.ObjectId, 
         //     ref: 'Series',
         // },
         // unit: {
-        //     type: mongoose.Schema.Types.Objectid, 
+        //     type: mongoose.Schema.Types.ObjectId, 
         //     ref: 'Unit',
         // },
         // category: {
-        //     type: mongoose.Schema.Types.Objectid, 
+        //     type: mongoose.Schema.Types.ObjectId, 
         //     ref: 'Category',
         //     require: true
         //}

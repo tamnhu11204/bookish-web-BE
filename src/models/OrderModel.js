@@ -12,28 +12,28 @@ const orderSchema = new mongoose.Schema(
 
         //khoa ngoai
         user: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'User',
             require: true
         },
         shippingMethod: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'ShippingMethod',
             require: true
         },
         paymentMethod: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'PaymentMethod',
             require: true
         },
         promotion: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Promotion',
             require: true
         },
         //lưu trạng thái đơn hàng hiện tại
         orderActive: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'OrderActive',
             require: true
         },

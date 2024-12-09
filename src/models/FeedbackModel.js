@@ -9,12 +9,12 @@ const feedbackSchema = new mongoose.Schema(
 
         //khóa ngoại
         user: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'User',
             require: true
         },
         product: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Product',
             require: true
         },

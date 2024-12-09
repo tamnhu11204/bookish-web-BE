@@ -7,7 +7,7 @@ const productImgsSchema = new mongoose.Schema(
 
         //khoa ngoai
         product: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Product',
             require: true
         },

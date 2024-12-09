@@ -7,7 +7,7 @@ const feedbackImgsSchema = new mongoose.Schema(
 
         //khoa ngoai
         feedback: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Feedback',
             require: true
         },

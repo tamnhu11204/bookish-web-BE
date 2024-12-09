@@ -9,7 +9,7 @@ const monthlyBestSellerSchema = new mongoose.Schema(
 
         //khóa ngoại
         product: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Product',
             require: true
         },

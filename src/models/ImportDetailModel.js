@@ -10,12 +10,12 @@ const importDetailSchema = new mongoose.Schema(
 
         //khoa ngoai
         import: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Import',
             require: true
         },
         product: {
-            type: mongoose.Schema.Types.Objectid, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Product',
             require: true
         },
