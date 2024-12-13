@@ -12,10 +12,12 @@ const app=express()
 const port=process.env.PORT || 3001
 
 
-app.use(cors(
-    // origin: 'http://localhost:3000', // Địa chỉ frontend
-    // credentials: true, // Cho phép gửi cookie qua request
-  ));
+app.use(cors());
+
+// Cấu hình giới hạn tải lên (ví dụ: 50MB)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 app.use(bodyParser.json())
 app.use(cookieParser())
 
