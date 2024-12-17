@@ -5,7 +5,10 @@ const publisherSchema = new mongoose.Schema(
     {
         name: {type: String, required: true, unique: true},
         note: {type: String},
-        img: {type: String}
+        img: {
+            data: Buffer,
+            contentType: String
+        }
     },
     {
         timestamps: true,

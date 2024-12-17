@@ -3,9 +3,10 @@ const ProductRouter = require('./ProductRouter')
 const ProvinceRouter = require('./ProvinceRouter')
 const DistrictRouter = require('./DistrictRouter')
 const CommuneRouter = require('./CommuneRouter')
-const LanguageRouter = require('./LanguageRouter')
-const UnitRouter = require('./UnitRouter')
-const FormatRouter = require('./FormatRouter')
+const LanguageRouter = require('./OptionRouter/LanguageRouter')
+const UnitRouter = require('./OptionRouter/UnitRouter')
+const FormatRouter = require('./OptionRouter/FormatRouter')
+const PublisherRouter = require ('./OptionRouter/PublisherRouter')
 
 const routes=(app) =>{
     app.use('/api/user', UserRouter)
@@ -16,6 +17,7 @@ const routes=(app) =>{
     app.use('/api/language', LanguageRouter)
     app.use('/api/unit', UnitRouter)
     app.use('/api/format', FormatRouter)
+    app.use('/api/publisher',PublisherRouter)
 }
 
 module.exports=routes;
