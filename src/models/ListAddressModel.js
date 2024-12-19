@@ -3,8 +3,9 @@ const mongoose = require('mongoose')
 
 const listAddressSchema = new mongoose.Schema(
     {
+        phone: {type: Number, required: true},
         specificAddress: {type: String, required: true},
-
+        isDefaulth: {type: Boolean, required: true},
         //khóa ngoại
         user: {
             type: mongoose.Schema.Types.ObjectId, 

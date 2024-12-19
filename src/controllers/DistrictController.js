@@ -37,9 +37,9 @@ const createDistrict = async (req, res) => {
 
 const updateDistrict = async (req, res) => {
     try {
-        const DistrictID=req.params.id
-        const data=req.body
-        if (!DistrictID){
+        const DistrictID = req.params.id
+        const data = req.body
+        if (!DistrictID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The DistrictID is required'
@@ -57,8 +57,8 @@ const updateDistrict = async (req, res) => {
 
 const deleteDistrict = async (req, res) => {
     try {
-        const DistrictID=req.params.id
-        if (!DistrictID){
+        const DistrictID = req.params.id
+        if (!DistrictID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The DistrictID is required'
@@ -76,19 +76,36 @@ const deleteDistrict = async (req, res) => {
 
 const getAllDistrict = async (req, res) => {
     try {
-        const response = await DistrictService.getAllDistrict();
-        return res.status(200).json(response);
-    } catch (e) {
-        return res.status(404).json({
-            message: e.message
+        const { provinceId } = req.query; // Lấy provinceId từ query
+
+        if (!provinceId) {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: 'provinceId is required',
+            });
+        }
+
+        const result = await DistrictService.getAllDistrict(provinceId);
+
+        if (result.status === 'OK') {
+            return res.status(200).json(result);
+        } else {
+            return res.status(400).json(result);
+        }
+    } catch (error) {
+        console.error('Error fetching districts:', error);
+        return res.status(500).json({
+            status: 'ERROR',
+            message: 'Internal Server Error',
+            error: error.message,
         });
     }
 };
 
 const getDetailDistrict = async (req, res) => {
     try {
-        const DistrictID=req.params.id
-        if (!DistrictID){
+        const DistrictID = req.params.id
+        if (!DistrictID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The DistrictID is required'
@@ -104,4 +121,4 @@ const getDetailDistrict = async (req, res) => {
 };
 
 
-module.exports = { createDistrict, updateDistrict, deleteDistrict, getAllDistrict, getDetailDistrict};
+module.exports = { createDistrict, updateDistrict, deleteDistrict, getAllDistrict, getDetailDistrict };

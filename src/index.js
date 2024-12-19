@@ -12,7 +12,12 @@ const app=express()
 const port=process.env.PORT || 3001
 
 
-app.use(cors());
+// Server-side (Node.js với Express):
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+}));
+
 
 // Cấu hình giới hạn tải lên (ví dụ: 50MB)
 app.use(express.json({ limit: '50mb' }));

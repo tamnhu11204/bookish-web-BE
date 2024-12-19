@@ -1,5 +1,6 @@
 const District = require('../models/DistrictModel');
 const bcrypt = require("bcrypt");
+const mongoose = require('mongoose'); // Import mongoose
 
 const createDistrict = (newDistrict) => {
     return new Promise(async (resolve, reject) => {
@@ -72,21 +73,35 @@ const deleteDistrict = (id) => {
     });
 };
 
-const getAllDistrict = () => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const allDistrict=await District.find()
-            resolve({
-                status: 'OK',
-                message: 'Success',
-                data: allDistrict,
-            })
-        } catch (e) {
-            reject(e);
-        }
-    });
-};
 
+const getAllDistrict = async (req, res) => {
+    try {
+      const { provinceId } = req.query; // Accept provinceId as a query parameter
+  
+      // Kiểm tra xem provinceId có phải là ObjectId hợp lệ không
+      if (!mongoose.Types.ObjectId.isValid(provinceId)) {
+        return res.status(400).json({
+          status: 'ERROR',
+          message: 'Invalid province ID format',
+        });
+      }
+  
+      // Lấy danh sách các quận huyện
+      const districts = await District.find({ province: provinceId });
+  
+      return res.status(200).json({
+        status: 'OK',
+        message: 'Districts retrieved successfully',
+        data: districts,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: 'ERROR',
+        message: 'Internal Server Error',
+        error: error.message,
+      });
+    }
+  };
 
 
 const getDetailDistrict = (id) => {

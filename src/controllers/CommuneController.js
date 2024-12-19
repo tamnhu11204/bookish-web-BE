@@ -73,14 +73,24 @@ const deleteCommune = async (req, res) => {
 
 const getAllCommune = async (req, res) => {
     try {
-        const response = await CommuneService.getAllCommune();
-        return res.status(200).json(response);
-    } catch (e) {
-        return res.status(404).json({
-            message: e.message
-        });
+      const { districtId } = req.query; // Accept provinceId as a query parameter
+  
+      // Call service to fetch districts with or without filtering
+      const result = await CommuneService.getAllCommune(districtId);
+  
+      if (result.status === 'OK') {
+        return res.status(200).json(result);
+      } else {
+        return res.status(400).json(result);
+      }
+    } catch (error) {
+      return res.status(500).json({
+        status: 'ERROR',
+        message: 'Internal Server Error',
+        error: error.message,
+      });
     }
-};
+  };
 
 const getDetailCommune = async (req, res) => {
     try {
