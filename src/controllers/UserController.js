@@ -59,18 +59,17 @@ const loginUser = async (req, res) => {
 
         // Truyền dữ liệu req.body vào UserService
         const response = await UserService.loginUser(req.body);
-        const { refresh_token, ...newResponse } = response;
-
-        // console.log("response", response);
-        res.cookie("refresh_token", refresh_token, {
+        const { refresh_token, ...newResponse } = response
+        //console.log('response', response);
+        res.cookie('refresh_token', refresh_token, {
             httpOnly: true,
             secure: false,
-            sameSite: "Strict",
-        });
-        return res.status(200).json(newResponse);
+            samesite: 'strict'
+        })
+        return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
-            message: e.message
+            message: e,
         });
     }
 };
@@ -147,27 +146,27 @@ const getDetailUser = async (req, res) => {
 
 //cấp token mới
 const refreshToken = async (req, res) => {
-    console.log("req.cookies", req.cookies);
-    console.log("req.cookies.refresh_token", req.cookies.refresh_token);
-  
+    //console.log("req.cookies", req.cookies);
+    //console.log("req.cookies.refresh_token", req.cookies.refresh_token);
+
     try {
-      const token = req.cookies.refresh_token;
-  
-      if (!token) {
-        return res.status(200).json({
-          status: "ERR",
-          message: "The token is required",
-        });
-      }
-  
-      const response = await JwtService.refreshTokenJwtService(token);
-      return res.status(200).json(response);
+        const token = req.cookies.refresh_token;
+
+        if (!token) {
+            return res.status(200).json({
+                status: "ERR",
+                message: "The token is required",
+            });
+        }
+
+        const response = await JwtService.refreshTokenJwtService(token);
+        return res.status(200).json(response);
     } catch (e) {
-      return res.status(404).json({
-        message: e,
-      });
+        return res.status(404).json({
+            message: e,
+        });
     }
-  };
+};
 
 const logoutUser = async (req, res) => {
     try {

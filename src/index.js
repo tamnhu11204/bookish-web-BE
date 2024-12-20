@@ -3,8 +3,8 @@ const dotenv = require('dotenv');
 const { default: mongoose } = require("mongoose");
 const routes = require('./routes')
 const bodyParser = require('body-parser')
-const cors = require('cors');
-const cookieParser = require('cookie-parser')
+const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 dotenv.config()
 
@@ -12,21 +12,20 @@ const app = express()
 const port = process.env.PORT || 3001
 
 
-// Server-side (Node.js với Express):
-const corsOptions = {
-    origin: 'http://localhost:3000',  // URL của frontend
-    credentials: true,  // Quan trọng để cho phép cookies được gửi
-};
+app.use(
+    cors({
+      origin: "http://localhost:3000", // URL của frontend
+      credentials: true, // cho phép gửi cookie
+    })
+  );
 
-app.use(cors(corsOptions));
+app.use(bodyParser.json())
+app.use(cookieParser())
 
 
 // Cấu hình giới hạn tải lên (ví dụ: 50MB)
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
-app.use(bodyParser.json())
-app.use(cookieParser())
 
 app.get('/', (req, res) => {
     res.send('Hello worldvgchch')

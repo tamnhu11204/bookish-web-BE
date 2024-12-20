@@ -51,7 +51,7 @@ const loginUser = (userLogin) => {
                 })
             }
             const comparePassword = bcrypt.compareSync(password, checkUser.password)
-            console.log('comparePassword', comparePassword)
+            //console.log('comparePassword', comparePassword)
             if (!comparePassword) {
                 resolve({
                     status: 'ERR',

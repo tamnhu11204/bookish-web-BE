@@ -2,23 +2,31 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const generalAccessToken = async (payload) => {
-    const access_token = jwt.sign({
-        ...payload
-    }, process.env.ACCESS_TOKEN, {
-        expiresIn: '30s'
-    });
-    return access_token;
-}
+const generalAccessToken = (payload) => {
+    console.log("payload ", payload);
+    const access_token = jwt.sign(
+        {
+            ...payload,
+        },
+        process.env.ACCESS_TOKEN,
+        { expiresIn: "30s" }
+    );
 
-const generalRefreshToken = async (payload) => {
-    const refresh_token = jwt.sign({
-        ...payload
-    }, process.env.REFRESH_TOKEN, {
-        expiresIn: '365d'
-    });
+    return access_token;
+};
+
+const generalRefreshToken = (payload) => {
+    console.log("payload ", payload);
+    const refresh_token = jwt.sign(
+        {
+            ...payload,
+        },
+        process.env.REFRESH_TOKEN,
+        { expiresIn: "365d" }
+    );
+
     return refresh_token;
-}
+};
 
 const refreshTokenJwtService = (token) => {
     return new Promise((resolve, reject) => {
@@ -36,7 +44,7 @@ const refreshTokenJwtService = (token) => {
                     isAdmin: user?.isAdmin
                 });
 
-                console.log('Access token:', access_token);
+                //console.log('Access token:', access_token);
 
                 resolve({
                     status: 'OK',
