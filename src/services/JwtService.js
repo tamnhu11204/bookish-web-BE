@@ -1,14 +1,14 @@
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-dotenv.config()
+dotenv.config();
 
 const generalAccessToken = async (payload) => {
     const access_token = jwt.sign({
         ...payload
     }, process.env.ACCESS_TOKEN, {
         expiresIn: '30s'
-    })
-    return access_token
+    });
+    return access_token;
 }
 
 const generalRefreshToken = async (payload) => {
@@ -16,35 +16,41 @@ const generalRefreshToken = async (payload) => {
         ...payload
     }, process.env.REFRESH_TOKEN, {
         expiresIn: '365d'
-    })
-    return refresh_token
+    });
+    return refresh_token;
 }
 
-const refreshTokenJwtService =  (token) => {
-    return new Promise( (resolve, reject) => {
+const refreshTokenJwtService = (token) => {
+    return new Promise((resolve, reject) => {
         try {
-            jwt.verify(token, process.env.REFRESH_TOKEN,async (err, user) => {
+            jwt.verify(token, process.env.REFRESH_TOKEN, async (err, user) => {
                 if (err) {
-                    resolve({
+                    return reject({
                         status: 'ERROR',
-                        message: 'The authemtication!!!'
-                    })
+                        message: 'Authentication failed! Invalid refresh token.'
+                    });
                 }
+
                 const access_token = await generalAccessToken({
                     id: user?.id,
                     isAdmin: user?.isAdmin
-                })
-                console.log('access_token', access_token)
+                });
+
+                console.log('Access token:', access_token);
+
                 resolve({
                     status: 'OK',
-                    message: 'Sucess',
+                    message: 'Success',
                     access_token
                 });
-            })
-
+            });
 
         } catch (e) {
-            reject(e);
+            reject({
+                status: 'ERROR',
+                message: 'An error occurred while generating the new access token.',
+                error: e.message
+            });
         }
     });
 }

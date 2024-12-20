@@ -1,4 +1,3 @@
-const { put } = require('../../routes/OptionRouter/PublisherRouter');
 const PublisherService = require('../../services/OptionService/PublisherService');
 
 const createPublisher = async (req, res) => {

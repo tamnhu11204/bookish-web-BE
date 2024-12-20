@@ -10,7 +10,7 @@ const createUser = async (req, res) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const isCheckEmail = emailRegex.test(email);
 
-        if (!email || !name || !password || !phone|| !birthday) {
+        if (!email || !name || !password || !phone || !birthday) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'Vui lòng điền đầy đủ thông tin.'
@@ -43,7 +43,7 @@ const loginUser = async (req, res) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const isCheckEmail = emailRegex.test(email);
 
-        if (!email || !password ) {
+        if (!email || !password) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'Vui lòng điền đầy đủ thông tin.'
@@ -59,12 +59,14 @@ const loginUser = async (req, res) => {
 
         // Truyền dữ liệu req.body vào UserService
         const response = await UserService.loginUser(req.body);
-        const {refresh_token, ...newResponse} = response
-        res.cookie('refresh_token', refresh_token, {
+        const { refresh_token, ...newResponse } = response;
+
+        // console.log("response", response);
+        res.cookie("refresh_token", refresh_token, {
             httpOnly: true,
             secure: false,
-            sameSite: 'strict'
-        })
+            sameSite: "Strict",
+        });
         return res.status(200).json(newResponse);
     } catch (e) {
         return res.status(404).json({
@@ -75,9 +77,9 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
     try {
-        const userID=req.params.id
-        const data=req.body
-        if (!userID){
+        const userID = req.params.id
+        const data = req.body
+        if (!userID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The userID is required'
@@ -95,8 +97,8 @@ const updateUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
     try {
-        const userID=req.params.id
-        if (!userID){
+        const userID = req.params.id
+        if (!userID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The userID is required'
@@ -126,8 +128,8 @@ const getAllUser = async (req, res) => {
 
 const getDetailUser = async (req, res) => {
     try {
-        const userID=req.params.id
-        if (!userID){
+        const userID = req.params.id
+        if (!userID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The userID is required'
@@ -143,26 +145,29 @@ const getDetailUser = async (req, res) => {
     }
 };
 
+//cấp token mới
 const refreshToken = async (req, res) => {
-    console.log('cookie', req.cookies.refresh_token)
+    console.log("req.cookies", req.cookies);
+    console.log("req.cookies.refresh_token", req.cookies.refresh_token);
+  
     try {
-        const token=req.cookies.refresh_token
-        if (!token) {
-            return res.status(401).json({
-                status: 'ERR',
-                message: 'The token is required'
-            });
-        }
-        
-        // Truyền dữ liệu req.body vào UserService
-        const response = await JwtService.refreshTokenJwtService(token);
-        return res.status(200).json(response);
-    } catch (e) {
-        return res.status(404).json({
-            message: e.message
+      const token = req.cookies.refresh_token;
+  
+      if (!token) {
+        return res.status(200).json({
+          status: "ERR",
+          message: "The token is required",
         });
+      }
+  
+      const response = await JwtService.refreshTokenJwtService(token);
+      return res.status(200).json(response);
+    } catch (e) {
+      return res.status(404).json({
+        message: e,
+      });
     }
-};
+  };
 
 const logoutUser = async (req, res) => {
     try {
@@ -178,4 +183,4 @@ const logoutUser = async (req, res) => {
     }
 };
 
-module.exports = { createUser, loginUser, updateUser, deleteUser,getAllUser, getDetailUser, refreshToken, logoutUser };
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken, logoutUser };
