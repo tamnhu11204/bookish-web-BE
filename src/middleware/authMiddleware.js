@@ -55,7 +55,39 @@ const authUserMiddleWare = (req, res, next) => {
   });
 };
 
+const authUserMiddleWareOther = (req, res, next) => {
+  const token = req.headers.token?.split(" ")[1];
+  console.log('Received Token:', token);  // Log token nhận được
+  const userId = req.params.user;
+
+  if (!token) {
+    return res.status(401).json({ status: "ERR", message: "Token missing" });
+  }
+
+  jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
+    if (err) {
+      console.log('Error verifying token:', err);
+      return res.status(401).json({
+        status: "ERR",
+        message: "The authentication failed.",
+      });
+    }
+
+    if (user?.id === userId) {
+      next();
+    } else {
+      return res.status(403).json({
+        status: "ERR",
+        message: "Forbidden",
+      });
+    }
+  });
+};
+
+
+
 module.exports = {
   authMiddleWare,
   authUserMiddleWare,
+  authUserMiddleWareOther
 };

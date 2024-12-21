@@ -1,108 +1,85 @@
 const ListAddress = require('../models/ListAddressModel');
-const bcrypt = require("bcrypt");
 
-const createListAddress = (newListAddress) => {
-    return new Promise(async (resolve, reject) => {
-        const {phone, specificAddress,isDefaulth,user,province,district,commune} = newListAddress;
-        try {
-            const createdListAddress = await ListAddress.create({phone, specificAddress,isDefaulth,user,province,district,commune});
-            if (createdListAddress) {
-                resolve({
-                    status: 'OK',
-                    message: 'Thêm địa chỉ mới thành công!',
-                    data: createdListAddress
-                });
-            }
-        } catch (e) {
-            reject(e);
-        }
-    });
+const createListAddress = async (newListAddress) => {
+    const { phone, specificAddress, isDefault, user, province, district, commune } = newListAddress;
+    try {
+        const createdListAddress = await ListAddress.create({ phone, specificAddress, isDefault, user, province, district, commune });
+        return {
+            status: 'OK',
+            message: 'Thêm địa chỉ mới thành công!',
+            data: createdListAddress,
+        };
+    } catch (e) {
+        throw new Error(e.message);
+    }
 };
 
-const updateListAddress = (id, data) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const checkListAddress = await ListAddress.findOne({ _id: id })
-            if (checkListAddress === null) {
-                resolve({
-                    status: 'OK',
-                    message: 'The ListAddress is not defined'
-                })
-            }
-
-            const updatedListAddress = await ListAddress.findByIdAndUpdate(id, data, { new: true })
-            resolve({
-                status: 'OK',
-                message: 'Success',
-                data: updatedListAddress
-            });
-        } catch (e) {
-            reject(e);
+const updateListAddress = async (id, data) => {
+    try {
+        const checkListAddress = await ListAddress.findById(id);
+        if (!checkListAddress) {
+            throw new Error('The ListAddress is not defined');
         }
-    });
+
+        const updatedListAddress = await ListAddress.findByIdAndUpdate(id, data, { new: true });
+        return {
+            status: 'OK',
+            message: 'Cập nhật địa chỉ thành công!',
+            data: updatedListAddress,
+        };
+    } catch (e) {
+        throw new Error(e.message);
+    }
 };
 
-const deleteListAddress = (id) => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const checkListAddress = await ListAddress.findOne({ _id: id })
-            if (checkListAddress === null) {
-                resolve({
-                    status: 'OK',
-                    message: 'The ListAddress is not defined'
-                })
-            }
-            await ListAddress.findByIdAndDelete(id)
-            resolve({
-                status: 'OK',
-                message: 'Delete sucessfully',
-            });
-        } catch (e) {
-            reject(e);
+const deleteListAddress = async (id) => {
+    try {
+        const checkListAddress = await ListAddress.findById(id);
+        if (!checkListAddress) {
+            throw new Error('The ListAddress is not defined');
         }
-    });
+        await ListAddress.findByIdAndDelete(id);
+        return {
+            status: 'OK',
+            message: 'Xóa địa chỉ thành công!',
+        };
+    } catch (e) {
+        throw new Error(e.message);
+    }
 };
 
-const getAllListAddress = () => {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const allListAddress=await ListAddress.find()
-            resolve({
-                status: 'OK',
-                message: 'Success',
-                data: allListAddress,
-            })
-        } catch (e) {
-            reject(e);
+const getAllListAddress = async (user) => {
+    try {
+
+        console.log('hi')
+        const list = await ListAddress.find({ user });
+
+        if (list.length === 0) {
+            return { status: 'ERR', message: 'No addresses found' };
         }
-    });
+
+        return { status: 'OK', message: 'List retrieved successfully', data: list };
+    } catch (error) {
+        throw new Error(error.message);
+    }
 };
 
 
-
-const getDetailListAddress = (id) => {
-    return new Promise(async (resolve, reject) => {
-
-        try {
-            const listAddress = await ListAddress.findOne({ _id: id })
-            if (listAddress === null) {
-                resolve({
-                    status: 'OK',
-                    message: 'The ListAddress is not defined'
-                })
-            }
-
-            resolve({
-                status: 'OK',
-                message: 'Get detail ListAddress sucessfully',
-                data: listAddress
-            });
-        } catch (e) {
-            reject(e);
+const getDetailListAddress = async (id) => {
+    try {
+        const listAddress = await ListAddress.findById(id);
+        if (!listAddress) {
+            throw new Error('The ListAddress is not defined');
         }
-    });
+
+        return {
+            status: 'OK',
+            message: 'Lấy chi tiết địa chỉ thành công!',
+            data: listAddress,
+        };
+    } catch (e) {
+        throw new Error(e.message);
+    }
 };
 
-
-
-module.exports = { createListAddress, updateListAddress, deleteListAddress, getAllListAddress, getDetailListAddress};
+module.exports = { createListAddress, updateListAddress, deleteListAddress, getAllListAddress, getDetailListAddress };

@@ -24,32 +24,32 @@ const productSchema = new mongoose.Schema(
         view: {type: Number, required: true},
 
         //khoa ngoai
-        // publisher: {
-        //     type: mongoose.Schema.Types.ObjectId, 
-        //     ref: 'Publisher',
-        //     require: true
-        // },
-        // language: {
-        //     type: mongoose.Schema.Types.ObjectId, 
-        //     ref: 'Language',
-        // },
-        // format: {
-        //     type: mongoose.Schema.Types.ObjectId, 
-        //     ref: 'Format',
-        // },
-        // series: {
-        //     type: mongoose.Schema.Types.ObjectId, 
-        //     ref: 'Series',
-        // },
-        // unit: {
-        //     type: mongoose.Schema.Types.ObjectId, 
-        //     ref: 'Unit',
-        // },
-        // category: {
-        //     type: mongoose.Schema.Types.ObjectId, 
-        //     ref: 'Category',
-        //     require: true
-        //}
+        publisher: {
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Publisher',
+            require: true
+        },
+        language: {
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Language',
+        },
+        format: {
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Format',
+        },
+        series: {
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Series',
+        },
+        unit: {
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Unit',
+        },
+        category: {
+            type: mongoose.Schema.Types.ObjectId, 
+            ref: 'Category',
+            require: true
+        }
     },
     {
         timestamps: true,

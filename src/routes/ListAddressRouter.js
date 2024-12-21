@@ -1,12 +1,12 @@
 const express =require ("express")
 const router= express.Router()
 const listAddressController=require('../controllers/ListAddressController')
-const { authMiddleWare, authUserMiddleWare } = require("../middleware/authMiddleware")
+const { authUserMiddleWareOther, authUserMiddleWare } = require("../middleware/authMiddleware")
 
 router.post('/create', listAddressController.createListAddress)
-router.put('/update/:id', authUserMiddleWare,listAddressController.updateListAddress)
+router.put('/update/:user/:id', authUserMiddleWareOther,listAddressController.updateListAddress)
 router.get('/get-detail/:id',authUserMiddleWare,listAddressController.getDetailListAddress)
-router.delete('/delete/:id',authUserMiddleWare,listAddressController.deleteListAddress)
-router.get('/get-all',authUserMiddleWare,listAddressController.getAllListAddress)
+router.delete('/delete/:user/:id',authUserMiddleWareOther,listAddressController.deleteListAddress)
+router.get('/get-all/:user',authUserMiddleWareOther,listAddressController.getAllListAddress)
 
 module.exports=router

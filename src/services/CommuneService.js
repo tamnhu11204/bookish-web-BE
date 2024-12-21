@@ -67,38 +67,22 @@ const deleteCommune = (id) => {
 };
 
 // Hàm lấy tất cả xã
-const getAllCommune = (districtId) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let query = {};
-        
-        if (districtId) {
-          if (!mongoose.Types.ObjectId.isValid(districtId)) {
-            return resolve({
-              status: 'ERROR',
-              message: 'Invalid district ID format',
-            });
-          }
-          query.district = districtId;
+const getAllCommune = async (district) => {
+    try {
+        console.log("district received:", district);
+
+        const communes = await Commune.find({ district });
+
+        if (communes.length === 0) {
+            return { status: 'ERR', message: 'No districts found' };
         }
-  
-        // Find districts with optional filtering
-        const communes = await Commune.find(query);
-  
-        resolve({
-          status: 'OK',
-          message: 'Districts retrieved successfully',
-          data: communes,
-        });
-      } catch (error) {
-        reject({
-          status: 'ERROR',
-          message: 'Error retrieving districts',
-          error: error.message,
-        });
-      }
-    });
-  };
+
+        return { status: 'OK', message: 'Districts retrieved successfully', data: communes };
+    } catch (error) {
+        console.error('Error:', error);  // Xem lỗi
+        return { status: 'ERR', message: error.message };
+    }
+};
 
 // Hàm lấy chi tiết xã
 const getDetailCommune = (id) => {
