@@ -8,6 +8,7 @@ const UnitRouter = require('./OptionRouter/UnitRouter')
 const FormatRouter = require('./OptionRouter/FormatRouter')
 const PublisherRouter = require ('./OptionRouter/PublisherRouter')
 const ListAddressRouter = require ('./ListAddressRouter')
+const PromotionRouter = require ('./PromotionRouter')
 
 const routes=(app) =>{
     app.use('/api/user', UserRouter)
@@ -20,6 +21,7 @@ const routes=(app) =>{
     app.use('/api/format', FormatRouter)
     app.use('/api/publisher',PublisherRouter)
     app.use('/api/listAddress',ListAddressRouter)
+    app.use('/api/promotion',PromotionRouter)
 }
 
 module.exports=routes;

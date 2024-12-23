@@ -7,11 +7,11 @@ const createUnit = async (req, res) => {
         console.log('req.body', req.body);
 
         // Kiểm tra trường nào bị thiếu
-        if (name === null) {
-            return res.status(200).json({
+        if (!name) {
+            resolve({
                 status: 'ERR',
-                message: 'Vui lòng điền đầy đủ thông tin.'
-            });
+                message: 'Vui lòng điền đầy đủ thông tin!'
+            })
         }
 
         const response = await UnitService.createUnit(req.body);
