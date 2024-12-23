@@ -4,7 +4,7 @@ const JwtService = require('../services/JwtService');
 const createUser = async (req, res) => {
     try {
         const {
-            email, name, password, phone, birthday
+            email, name, password, phone, birthday, isAdmin
         } = req.body;
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -115,8 +115,13 @@ const deleteUser = async (req, res) => {
 
 const getAllUser = async (req, res) => {
     try {
-        // Truyền dữ liệu req.body vào UserService
-        const response = await UserService.getAllUser();
+        const { isAdmin } = req.query;
+        
+        // Chuyển giá trị isAdmin sang boolean nếu cần
+        const isAdminBool = isAdmin === 'true' ? true : isAdmin === 'false' ? false : undefined;
+
+        // Truyền isAdmin đã được xử lý vào UserService
+        const response = await UserService.getAllUser(isAdminBool);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
@@ -124,6 +129,7 @@ const getAllUser = async (req, res) => {
         });
     }
 };
+
 
 const getDetailUser = async (req, res) => {
     try {
@@ -182,4 +188,17 @@ const logoutUser = async (req, res) => {
     }
 };
 
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken, logoutUser };
+const toggleActiveStatus = async (req, res) => {
+    const { id } = req.params; // Lấy id từ tham số route
+    try {
+      const result = await UserService.toggleActiveStatus(id);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({
+        status: 'ERR',
+        message: error.message,
+      });
+    }
+  };
+
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken, logoutUser, toggleActiveStatus };

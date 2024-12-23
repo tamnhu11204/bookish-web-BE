@@ -4,7 +4,7 @@ const { generalAccessToken, generalRefreshToken } = require('./JwtService');
 
 const createUser = (newUser) => {
     return new Promise(async (resolve, reject) => {
-        const { email, name, password, phone, birthday } = newUser;
+        const { email, name, password, phone, birthday, isAdmin } = newUser;
         try {
             const checkUser = await User.findOne({
                 email: email
@@ -22,7 +22,8 @@ const createUser = (newUser) => {
                 name,
                 password: hash,
                 phone,
-                birthday
+                birthday,
+                isAdmin
             });
             if (createdUser) {
                 resolve({
@@ -130,13 +131,15 @@ const deleteUser = (id) => {
     });
 };
 
-const getAllUser = () => {
+const getAllUser = (isAdmin) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allUser = await User.find()
+            // Nếu isAdmin được truyền là true hoặc false, lọc theo giá trị đó
+            const filter = isAdmin !== undefined ? { isAdmin: isAdmin } : {};
+            const allUser = await User.find(filter);
             resolve({
                 status: 'OK',
-                message: 'Get all user sucessfully',
+                message: 'Get all user successfully',
                 data: allUser
             });
         } catch (e) {
@@ -144,6 +147,7 @@ const getAllUser = () => {
         }
     });
 };
+
 
 const getDetailUser = (id) => {
     return new Promise(async (resolve, reject) => {
@@ -168,5 +172,26 @@ const getDetailUser = (id) => {
     });
 };
 
+const toggleActiveStatus = async (userId) => {
+    try {
+        const user = await User.findById(userId);
+        if (!user) {
+          throw new Error('User không tồn tại!');
+        }
+    
+        user.active = !user.active; // Đảo ngược trạng thái active
+        await user.save();
+    
+        return {
+          status: 'OK',
+          message: 'Cập nhật trạng thái active thành công!',
+          user,
+        };
+      } catch (error) {
+        throw new Error(error.message || 'Đã xảy ra lỗi khi cập nhật trạng thái user.');
+      }
+  };
+  
 
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser };
+
+module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, toggleActiveStatus };
