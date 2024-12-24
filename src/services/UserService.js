@@ -176,22 +176,63 @@ const toggleActiveStatus = async (userId) => {
     try {
         const user = await User.findById(userId);
         if (!user) {
-          throw new Error('User không tồn tại!');
+            throw new Error('User không tồn tại!');
         }
-    
+
         user.active = !user.active; // Đảo ngược trạng thái active
         await user.save();
-    
+
         return {
-          status: 'OK',
-          message: 'Cập nhật trạng thái active thành công!',
-          user,
+            status: 'OK',
+            message: 'Cập nhật trạng thái active thành công!',
+            user,
         };
-      } catch (error) {
+    } catch (error) {
         throw new Error(error.message || 'Đã xảy ra lỗi khi cập nhật trạng thái user.');
-      }
-  };
-  
+    }
+};
 
+const resetPassword = (userId, oldPassword, newPassword) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Tìm kiếm user theo ID
+            const user = await User.findById(userId);
+            if (!user) {
+                resolve({
+                    status: 'ERR',
+                    message: 'User không tồn tại!'
+                });
+                return;
+            }
 
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, toggleActiveStatus };
+            // Kiểm tra mật khẩu cũ
+            const isPasswordMatch = bcrypt.compareSync(oldPassword, user.password);
+            if (!isPasswordMatch) {
+                resolve({
+                    status: 'ERR',
+                    message: 'Mật khẩu cũ không chính xác!'
+                });
+                return;
+            }
+
+            // Hash mật khẩu mới
+            const hashedPassword = bcrypt.hashSync(newPassword, 10);
+            user.password = hashedPassword;
+
+            // Lưu lại user với mật khẩu mới
+            await user.save();
+
+            resolve({
+                status: 'OK',
+                message: 'Đổi mật khẩu thành công!',
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
+
+module.exports = {
+    createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser,
+    toggleActiveStatus, resetPassword
+};

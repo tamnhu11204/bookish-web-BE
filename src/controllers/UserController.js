@@ -116,7 +116,7 @@ const deleteUser = async (req, res) => {
 const getAllUser = async (req, res) => {
     try {
         const { isAdmin } = req.query;
-        
+
         // Chuyển giá trị isAdmin sang boolean nếu cần
         const isAdminBool = isAdmin === 'true' ? true : isAdmin === 'false' ? false : undefined;
 
@@ -191,14 +191,41 @@ const logoutUser = async (req, res) => {
 const toggleActiveStatus = async (req, res) => {
     const { id } = req.params; // Lấy id từ tham số route
     try {
-      const result = await UserService.toggleActiveStatus(id);
-      res.status(200).json(result);
+        const result = await UserService.toggleActiveStatus(id);
+        res.status(200).json(result);
     } catch (error) {
-      res.status(400).json({
-        status: 'ERR',
-        message: error.message,
-      });
+        res.status(400).json({
+            status: 'ERR',
+            message: error.message,
+        });
     }
-  };
+};
 
-module.exports = { createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken, logoutUser, toggleActiveStatus };
+const resetPassword = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { oldPassword, newPassword } = req.body;
+
+        // Kiểm tra thông tin đầu vào
+        if (!oldPassword || !newPassword) {
+            return res.status(200).json({
+                status: 'ERR',
+                message: 'Vui lòng điền đầy đủ thông tin!'
+            });
+        }
+
+        // Truyền dữ liệu vào UserService
+        const response = await UserService.resetPassword(id, oldPassword, newPassword);
+        return res.status(200).json(response);
+    } catch (e) {
+        return res.status(404).json({
+            message: e.message
+        });
+    }
+};
+
+
+module.exports = {
+    createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser, refreshToken, logoutUser,
+    toggleActiveStatus, resetPassword
+};

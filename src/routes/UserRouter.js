@@ -12,7 +12,7 @@ router.get('/get-detail/:id', authUserMiddleWare, userController.getDetailUser)
 router.post('/refresh-token', userController.refreshToken)
 router.post('/logout', userController.logoutUser)
 router.put('/toggle-active/:id', authMiddleWare,userController.toggleActiveStatus);
-//router.put('/reset-password/:id', authUserMiddleWare, userController.resetPassword)
+router.put('/reset-password/:id', authUserMiddleWare, userController.resetPassword)
 
 
 module.exports=router
