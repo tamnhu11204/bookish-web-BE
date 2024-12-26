@@ -63,5 +63,29 @@ const getDetailShopProfile = async (req, res) => {
     }
 };
 
+const updateImage = async (req, res) => {
+    try {
+      // Lấy ảnh từ request body (có thể là base64 string)
+      const { img } = req.body;
+      
+      // Kiểm tra xem ảnh có tồn tại không
+      if (!img || !Array.isArray(img)) {
+        return res.status(400).json({ message: "Ảnh không hợp lệ." });
+      }
+  
+      // Gọi service để cập nhật ảnh
+      const result = await shopService.updateImage(req.user.id, img);
+  
+      if (result) {
+        return res.status(200).json({ message: "Cập nhật ảnh thành công." });
+      } else {
+        return res.status(500).json({ message: "Lỗi khi cập nhật ảnh." });
+      }
+    } catch (error) {
+      console.error('Error in updateShopImage: ', error);
+      return res.status(500).json({ message: "Đã xảy ra lỗi khi cập nhật ảnh." });
+    }
+  };
 
-module.exports = { createShopProfile, updateShopProfile, getAllShopProfile, getDetailShopProfile };
+
+module.exports = { updateImage,createShopProfile, updateShopProfile, getAllShopProfile, getDetailShopProfile };

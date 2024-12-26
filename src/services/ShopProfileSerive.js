@@ -87,6 +87,28 @@ const getDetailShopProfile = (id) => {
     });
 };
 
+const updateImage = async (id, img) => {
+    try {
+      // Tìm cửa hàng dựa trên shopId và cập nhật trường img
+      const shop = await ShopProfile.findById(id);
+      
+      if (!shop) {
+        throw new Error("Cửa hàng không tồn tại.");
+      }
+  
+      // Cập nhật trường img trong cửa hàng
+      shop.img = img;
+  
+      // Lưu lại thay đổi
+      await shop.save();
+  
+      return true;
+    } catch (error) {
+      console.error("Error in updateImage service: ", error);
+      return false;
+    }
+  };
 
 
-module.exports = { createShopProfile, updateShopProfile, getAllShopProfile, getDetailShopProfile };
+
+module.exports = { updateImage, createShopProfile, updateShopProfile, getAllShopProfile, getDetailShopProfile };

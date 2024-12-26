@@ -6,5 +6,6 @@ router.post('/create', shopProfileController.createShopProfile)
 router.put('/update/:id', shopProfileController.updateShopProfile)
 router.get('/get-detail/:id',shopProfileController.getDetailShopProfile)
 router.get('/get-all',shopProfileController.getAllShopProfile)
+router.get('/update-img',shopProfileController.updateImage)
 
 module.exports=router
