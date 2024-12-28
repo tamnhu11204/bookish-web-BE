@@ -87,6 +87,7 @@ const getAllPublisher = () => {
     return new Promise(async (resolve, reject) => {
         try {
             const allpublisher=await Publisher.find()
+           
             resolve({
                 status: 'OK',
                 message: 'Success',

@@ -3,52 +3,55 @@ const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema(
     {
-        name: {type: String, required: true, unique: true},
-        author: {type: String, required: true},
-        publishDate: {type: Date},
-        weight: {type: Number},
-        height: {type: Number},
-        wIdth: {type: Number},
-        length: {type: Number},
-        page: {type: Number},
-        description: {type: String},
-        price: {type: Number, required: true},
-        priceEntry: {type: Number, required: true},
-        discount: {type: Number, required: true},
-        stock: {type: Number, required: true},
-        img: {type: String},
-        star: {type: Number, required: true},
-        favorite: {type: Number, required: true},
-        score: {type: Number, required: true},
-        hot: {type: Boolean, required: true},
-        view: {type: Number, required: true},
+        name: { type: String, required: true, unique: true }, // Tên sản phẩm bắt buộc và duy nhất
+        author: { type: String, required: true }, // Tác giả bắt buộc
+        publishDate: { type: Date }, // Ngày xuất bản không bắt buộc
+        weight: { type: Number, default: 0 }, // Trọng lượng, thêm giá trị mặc định
+        height: { type: Number, default: 0 },
+        width: { type: Number, default: 0 },
+        length: { type: Number, default: 0 },
+        page: { type: Number, default: 0 }, // Số trang
+        description: { type: String, default: "" }, // Mô tả
+        price: { type: Number, required: true }, // Giá sản phẩm bắt buộc
+        priceEntry: { type: Number, required: true }, // Giá sau giảm bắt buộc
+        discount: { type: Number, default: 0 }, // Phần trăm giảm giá
+        stock: { type: Number, default: 0 }, // Tồn kho
+        img: {
+            data: Buffer, // Ảnh sẽ được lưu dưới dạng Buffer
+            contentType: String // Loại ảnh (MIME type)
+        },
+        star: { type: Number, default: 0 }, // Số sao
+        favorite: { type: Number, default: 0 }, // Số yêu thích
+        score: { type: Number, default: 0 }, // Điểm
+        hot: { type: Boolean, default: false }, // Sản phẩm nổi bật
+        view: { type: Number, default: 0 }, // Lượt xem
 
-        //khoa ngoai
+        // Định nghĩa các khóa ngoại
         publisher: {
-            type: mongoose.Schema.Types.ObjectId, 
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Publisher',
-            require: true
+            required: true // Nhà xuất bản bắt buộc
         },
         language: {
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Language',
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Language'
         },
         format: {
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Format',
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Format'
         },
         series: {
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Series',
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Series'
         },
         unit: {
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Unit',
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Unit'
         },
         category: {
-            type: mongoose.Schema.Types.ObjectId, 
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
-            require: true
+            required: true // Danh mục sản phẩm bắt buộc
         }
     },
     {
