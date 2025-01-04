@@ -3,17 +3,19 @@ const ProductService = require('../services/ProductService');
 const createProduct = async (req, res) => {
     try {
         const {
-            name, author, publishDate, weight, height, width, length, page, description, price, priceEntry,
-            discount, stock, img, star, favorite, score, hot, view, publisher, language, format, unit, category,
+            name, author, publishDate, weight, height, width, length, page, description, price,
+            discount, stock, img, star, favorite, view, publisher, language, format, unit, category, supplier
         } = req.body;
         console.log('req.body', req.body);
 
-        if (!name || !author || !price || !priceEntry || discount == null || stock == null) {
+        // Kiểm tra các trường bắt buộc
+        if (!name || !author || !price) {
             return res.status(400).json({
                 status: 'ERR',
                 message: 'Missing required fields',
             });
         }
+
 
         const response = await ProductService.createProduct(req.body);
         return res.status(201).json(response);
@@ -34,6 +36,11 @@ const updateProduct = async (req, res) => {
                 status: 'ERR',
                 message: 'Product ID is required',
             });
+        }
+
+        // Đảm bảo img là mảng khi cập nhật sản phẩm
+        if (req.body.img && !Array.isArray(req.body.img)) {
+            req.body.img = [req.body.img]; // Chuyển img thành mảng nếu không phải mảng
         }
 
         const response = await ProductService.updateProduct(productID, req.body);

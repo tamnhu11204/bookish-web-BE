@@ -24,6 +24,9 @@ const ShopProfileSchema = new mongoose.Schema(
             required: true
         },
         img: { type: [String], default: [] },
+        bank: { type: String, default: '' },
+        momo: {type: String, default: ''},
+        deliveryFee: {type: Number, default: 0},
         specificAddress: { type: String, default: '' },
         facebook: { type: String, default: '' },
         insta: { type: String, default: '' },

@@ -13,18 +13,14 @@ const productSchema = new mongoose.Schema(
         page: { type: Number, default: 0 }, // Số trang
         description: { type: String, default: "" }, // Mô tả
         price: { type: Number, required: true }, // Giá sản phẩm bắt buộc
-        priceEntry: { type: Number, required: true }, // Giá sau giảm bắt buộc
         discount: { type: Number, default: 0 }, // Phần trăm giảm giá
         stock: { type: Number, default: 0 }, // Tồn kho
-        img: {
-            data: Buffer, // Ảnh sẽ được lưu dưới dạng Buffer
-            contentType: String // Loại ảnh (MIME type)
-        },
+        img: { type: [String] },
         star: { type: Number, default: 0 }, // Số sao
         favorite: { type: Number, default: 0 }, // Số yêu thích
-        score: { type: Number, default: 0 }, // Điểm
-        hot: { type: Boolean, default: false }, // Sản phẩm nổi bật
         view: { type: Number, default: 0 }, // Lượt xem
+        sold: {type: Number, default: 0},
+        feedbackCount: {type: Number, default: 0},
 
         // Định nghĩa các khóa ngoại
         publisher: {
@@ -52,6 +48,11 @@ const productSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
             required: true // Danh mục sản phẩm bắt buộc
+        },
+        supplier: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Supplier',
+            required: true 
         }
     },
     {

@@ -183,14 +183,16 @@ const deleteListAddress = async (req, res) => {
 
 const getAllListAddress = async (req, res) => {
     try {
-
         const user = req.params.user;
+        const isDefault = req.query.isDefault;  // Retrieve the isDefault from query string
 
         if (!user) {
             return res.status(400).json({ status: 'ERR', message: 'User ID is required' });
         }
 
-        const response = await ListAddressService.getAllListAddress(user);
+        // Pass isDefault to the service function
+        const response = await ListAddressService.getAllListAddress(user, isDefault);
+
         if (response.status === 'ERR') {
             return res.status(404).json(response);
         }
@@ -200,6 +202,7 @@ const getAllListAddress = async (req, res) => {
         return res.status(500).json({ status: 'ERR', message: e.message });
     }
 };
+
   
 
 

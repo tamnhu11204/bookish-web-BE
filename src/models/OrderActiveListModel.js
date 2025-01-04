@@ -4,9 +4,9 @@ const mongoose = require('mongoose')
 const orderActiveListSchema = new mongoose.Schema(
     {
         //khóa ngoại
-        active: {
+        order: {
             type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Active',
+            ref: 'Order',
             require: true
         },
         active: {

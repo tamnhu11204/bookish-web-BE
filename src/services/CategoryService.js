@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const createCategory = (newCategory) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note} = newCategory;
+        const {name, note, img} = newCategory;
         try {
             const checkCategory = await Category.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createCategory = (newCategory) => {
                     message: 'Tên danh mục đã tồn tại! Vui lòng nhập tên khác.'
                 })
             }
-            const createdCategory = await Category.create({name, note});
+            const createdCategory = await Category.create({name, note, img});
             if (createdCategory) {
                 resolve({
                     status: 'OK',

@@ -87,5 +87,32 @@ const updateImage = async (req, res) => {
     }
   };
 
+  const updatePaymentAndFee = async (req, res) => {
+    const { id } = req.params;
+    const { bank, momo, deliveryFee } = req.body;
 
-module.exports = { updateImage,createShopProfile, updateShopProfile, getAllShopProfile, getDetailShopProfile };
+    try {
+        // Gọi service để cập nhật các trường
+        const result = await ShopProfileService.updatePaymentAndFee(id, { bank, momo, deliveryFee });
+
+        if (result.status === 'ERROR') {
+            return res.status(400).json({
+                status: 'ERROR',
+                message: result.message,
+            });
+        }
+
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Cập nhật thành công',
+            data: result.data,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: 'ERROR',
+            message: 'Có lỗi xảy ra trong quá trình xử lý',
+        });
+    }
+};
+
+module.exports = { updatePaymentAndFee, updateImage,createShopProfile, updateShopProfile, getAllShopProfile, getDetailShopProfile };

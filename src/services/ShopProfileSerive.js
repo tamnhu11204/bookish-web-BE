@@ -109,6 +109,41 @@ const updateImage = async (id, img) => {
     }
   };
 
+  const updatePaymentAndFee = (id, data) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Tìm kiếm cửa hàng
+            const shop = await ShopProfile.findById(id);
+
+            if (!shop) {
+                resolve({
+                    status: 'ERROR',
+                    message: 'Cửa hàng không tồn tại',
+                });
+            }
+
+            // Cập nhật các trường được yêu cầu
+            const updatedShopProfile = await ShopProfile.findByIdAndUpdate(
+                id,
+                { 
+                    bank: data.bank, 
+                    momo: data.momo, 
+                    deliveryFee: data.deliveryFee 
+                },
+                { new: true } // Trả về document mới sau khi cập nhật
+            );
+
+            resolve({
+                status: 'OK',
+                message: 'Cập nhật thành công',
+                data: updatedShopProfile,
+            });
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
 
 
-module.exports = { updateImage, createShopProfile, updateShopProfile, getAllShopProfile, getDetailShopProfile };
+
+module.exports = { updatePaymentAndFee, updateImage, createShopProfile, updateShopProfile, getAllShopProfile, getDetailShopProfile };

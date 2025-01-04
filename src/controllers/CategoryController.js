@@ -2,7 +2,7 @@ const CategoryService = require('../services/CategoryService');
 
 const createCategory = async (req, res) => {
     try {
-        const {name, note} = req.body;
+        const {name, note, img} = req.body;
         
         console.log('req.body', req.body);
 

@@ -4,8 +4,8 @@ const Product = require('../models/ProductModel');
 const createProduct = async (newProduct) => {
     try {
         const { 
-            name, author, publishDate, weight, height, width, length, page, description, price, priceEntry,
-            discount, stock, img, star, favorite, score, hot, view, publisher, language, format, unit, category,
+            name, author, publishDate, weight, height, width, length, page, description, price, 
+            discount, stock, img, star, favorite,  view, publisher, language, format, unit, category, supplier
          } = newProduct;
 
         // Kiểm tra sản phẩm đã tồn tại
@@ -16,6 +16,7 @@ const createProduct = async (newProduct) => {
                 message: 'The product name already exists',
             };
         }
+
 
         // Tạo sản phẩm mới
         const createdProduct = await Product.create(newProduct);
@@ -33,6 +34,11 @@ const createProduct = async (newProduct) => {
 // Cập nhật sản phẩm
 const updateProduct = async (id, data) => {
     try {
+        // Đảm bảo trường img là mảng nếu có trong data
+        if (data.img && !Array.isArray(data.img)) {
+            data.img = [data.img];
+        }
+
         const product = await Product.findByIdAndUpdate(id, data, { new: true });
         if (!product) {
             return {

@@ -48,11 +48,19 @@ const deleteListAddress = async (id) => {
     }
 };
 
-const getAllListAddress = async (user) => {
+const getAllListAddress = async (user, isDefault) => {
     try {
+        console.log('hi');
 
-        console.log('hi')
-        const list = await ListAddress.find({ user });
+        // Build the query object dynamically
+        const query = { user };
+
+        // Add isDefault to query if it's provided
+        if (isDefault !== undefined) {
+            query.isDefault = isDefault;
+        }
+
+        const list = await ListAddress.find(query);
 
         if (list.length === 0) {
             return { status: 'ERR', message: 'No addresses found' };
@@ -63,6 +71,7 @@ const getAllListAddress = async (user) => {
         throw new Error(error.message);
     }
 };
+
 
 
 const getDetailListAddress = async (id) => {
