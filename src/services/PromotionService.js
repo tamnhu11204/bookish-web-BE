@@ -3,9 +3,9 @@ const bcrypt = require("bcrypt");
 
 const createPromotion = (newPromotion) => {
     return new Promise(async (resolve, reject) => {
-        const {value, start, finish, condition, quantity} = newPromotion;
+        const { value, start, finish, condition, quantity } = newPromotion;
         try {
-            const createdPromotion = await Promotion.create({value, start, finish, condition, quantity});
+            const createdPromotion = await Promotion.create({ value, start, finish, condition, quantity });
             if (createdPromotion) {
                 resolve({
                     status: 'OK',
@@ -66,7 +66,7 @@ const deletePromotion = (id) => {
 const getAllPromotion = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allPromotion=await Promotion.find()
+            const allPromotion = await Promotion.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -104,5 +104,37 @@ const getDetailPromotion = (id) => {
 };
 
 
+const updatePromotionUsage = async (id) => {
+    try {
+        const promotion = await Promotion.findById(id);
 
-module.exports = { createPromotion, updatePromotion, deletePromotion, getAllPromotion, getDetailPromotion};
+        if (!promotion) {
+            return { message: 'Promotion not found', status: 'fail' };
+        }
+
+        // Kiểm tra nếu đã sử dụng đủ số lượng
+        if (promotion.used >= promotion.quantity) {
+            return { message: 'Promotion already fully used', status: 'fail' };
+        }
+
+        // Tăng giá trị used
+        promotion.used += 1;
+
+        // Lưu lại thay đổi
+        const updatedPromotion = await promotion.save();
+
+        // Nếu số lượng used đã đạt đến quantity, xóa promotion
+        if (updatedPromotion.used === updatedPromotion.quantity) {
+            await Promotion.findByIdAndDelete(id);
+            return { message: 'Promotion fully used and deleted', status: 'success' };
+        }
+
+        return { message: 'Promotion usage updated successfully', promotion: updatedPromotion, status: 'success' };
+    } catch (error) {
+        console.error('Error:', error.message);
+        throw new Error(error.message || 'An error occurred while updating promotion usage');
+    }
+};
+
+
+module.exports = { updatePromotionUsage, createPromotion, updatePromotion, deletePromotion, getAllPromotion, getDetailPromotion };

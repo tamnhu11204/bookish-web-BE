@@ -5,16 +5,16 @@ const orderActiveListSchema = new mongoose.Schema(
     {
         //khóa ngoại
         order: {
-            type: mongoose.Schema.Types.ObjectId, 
+            type: mongoose.Schema.Types.ObjectId,
             ref: 'Order',
             require: true
         },
-        active: {
-            type: mongoose.Schema.Types.ObjectId, 
-            ref: 'Active',
-            require: true
-        },
+        activeList: [{
+            active: { type: String, required: true },
+            date: { type: Date, required: true },
+        }],
     },
+
     {
         timestamps: true,
     }

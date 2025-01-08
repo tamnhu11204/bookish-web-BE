@@ -15,5 +15,7 @@ const promotionSchema = new mongoose.Schema(
     }
 );
 
+promotionSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
 const Promotion = mongoose.model('Promotion', promotionSchema);
 module.exports = Promotion;

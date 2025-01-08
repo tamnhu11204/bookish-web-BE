@@ -91,5 +91,23 @@ const getDetailPromotion = async (req, res) => {
     }
 };
 
+const updatePromotionUsage = async (req, res) => {
+    const { id } = req.params;
 
-module.exports = { createPromotion, updatePromotion, deletePromotion, getAllPromotion, getDetailPromotion};
+    try {
+        const result = await PromotionService.updatePromotionUsage(id);
+        res.status(200).json(result);
+    } catch (error) {
+        if (error.message === 'Promotion not found') {
+            res.status(404).json({ error: error.message });
+        } else if (error.message === 'Promotion already fully used') {
+            res.status(409).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: error.message });
+        }
+    }
+};
+
+
+
+module.exports = { updatePromotionUsage, createPromotion, updatePromotion, deletePromotion, getAllPromotion, getDetailPromotion};

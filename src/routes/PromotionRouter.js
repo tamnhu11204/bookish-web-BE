@@ -7,5 +7,6 @@ router.put('/update/:id', promotionController.updatePromotion)
 router.get('/get-detail/:id',promotionController.getDetailPromotion)
 router.delete('/delete/:id',promotionController.deletePromotion)
 router.get('/get-all',promotionController.getAllPromotion)
+router.put('/update-used/:id', promotionController.updatePromotion)
 
 module.exports=router

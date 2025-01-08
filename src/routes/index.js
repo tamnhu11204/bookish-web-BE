@@ -13,6 +13,8 @@ const ShopProfileRouter = require ('./ShopProfileRouter')
 const SupplierRouter = require ('./OptionRouter/SupplierRouter')
 const ActiveRouter = require ('./OptionRouter/ActiveRouter')
 const CategoryRouter = require ('./CategoryRouter')
+const OrderRouter = require ('./OrderRouter')
+const OrderActiveListRouter = require ('./OrderActiveListRouter')
 
 const routes=(app) =>{
     app.use('/api/user', UserRouter)
@@ -30,6 +32,8 @@ const routes=(app) =>{
     app.use('/api/supplier',SupplierRouter)
     app.use('/api/active',ActiveRouter)
     app.use('/api/category',CategoryRouter)
+    app.use('/api/order',OrderRouter)
+    app.use('/api/order-active',OrderActiveListRouter)
 }
 
 module.exports=routes;
