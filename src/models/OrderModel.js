@@ -12,6 +12,7 @@ const orderSchema = new mongoose.Schema(
                 },
                 price: { type: Number, required: true },
                 amount: { type: Number, required: true },
+                isFeedback: { type: Boolean, default: false },
             }
         ],
         phone: { type: Number, required: true },

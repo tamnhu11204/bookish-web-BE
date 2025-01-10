@@ -10,4 +10,5 @@ router.get('/get-detail/:id',orderController.getDetailOrder)
 router.get('/get-all',orderController.getAllOrder)
 router.put('/update-active-now/:id',orderController.updateActiveNow)
 router.put('/update-cancel/:id',orderController.updateIsCancel)
+router.put('/update-isFeedback/:orderId/:productId',orderController.toggleFeedbackStatus)
 module.exports=router

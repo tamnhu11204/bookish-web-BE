@@ -3,10 +3,10 @@ const Product = require('../models/ProductModel');
 // Tạo sản phẩm
 const createProduct = async (newProduct) => {
     try {
-        const { 
-            name, author, publishDate, weight, height, width, length, page, description, price, 
-            discount, stock, img, star, favorite,  view, publisher, language, format, unit, category, supplier
-         } = newProduct;
+        const {
+            name, author, publishDate, weight, height, width, length, page, description, price,
+            discount, stock, img, star, favorite, view, publisher, language, format, unit, category, supplier
+        } = newProduct;
 
         // Kiểm tra sản phẩm đã tồn tại
         const existingProduct = await Product.findOne({ name });
@@ -26,7 +26,7 @@ const createProduct = async (newProduct) => {
             data: createdProduct,
         };
     } catch (e) {
-        console.error('Error creating product:', e);  // Log lỗi để dễ debug
+        console.error('Error creating product:', e); 
         throw { status: 'ERROR', message: 'Error creating product', error: e.message };
     }
 };
@@ -34,7 +34,6 @@ const createProduct = async (newProduct) => {
 // Cập nhật sản phẩm
 const updateProduct = async (id, data) => {
     try {
-        // Đảm bảo trường img là mảng nếu có trong data
         if (data.img && !Array.isArray(data.img)) {
             data.img = [data.img];
         }
@@ -52,7 +51,7 @@ const updateProduct = async (id, data) => {
             data: product,
         };
     } catch (e) {
-        console.error('Error updating product:', e);  // Log lỗi để dễ debug
+        console.error('Error updating product:', e);  
         throw { status: 'ERROR', message: 'Error updating product', error: e.message };
     }
 };
@@ -72,7 +71,7 @@ const deleteProduct = async (id) => {
             message: 'Product deleted successfully',
         };
     } catch (e) {
-        console.error('Error deleting product:', e);  // Log lỗi để dễ debug
+        console.error('Error deleting product:', e);  
         throw { status: 'ERROR', message: 'Error deleting product', error: e.message };
     }
 };
@@ -83,7 +82,7 @@ const getAllProduct = async (limit = 10, page = 0, sort = null, filter = null) =
         const query = {};
         if (filter) {
             const [field, value] = filter;
-            query[field] = { $regex: value, $options: 'i' }; // Tìm kiếm không phân biệt chữ hoa/chữ thường
+            query[field] = { $regex: value, $options: 'i' }; 
         }
 
         const sortOption = sort ? { [sort[0]]: sort[1] } : {};
@@ -103,7 +102,7 @@ const getAllProduct = async (limit = 10, page = 0, sort = null, filter = null) =
             totalPage: Math.ceil(totalProduct / limit),
         };
     } catch (e) {
-        console.error('Error fetching products:', e);  // Log lỗi để dễ debug
+        console.error('Error fetching products:', e);  
         throw { status: 'ERROR', message: 'Error fetching products', error: e.message };
     }
 };
@@ -130,7 +129,75 @@ const getDetailProduct = async (id) => {
     }
 };
 
+const updateProductRating = async (productId, newRating) => {
+    if (newRating < 1 || newRating > 5) {
+        throw new Error('Số sao phải nằm trong khoảng từ 1 đến 5.');
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+        throw new Error('Sản phẩm không tồn tại.');
+    }
+
+    // Cập nhật tổng số sao và số lượt đánh giá
+    product.feedbackCount += 1;
+    product.star = (product.star + newRating) / product.feedbackCount; // Ví dụ tính trung bình
+
+    await product.save();
+
+    return product;
+};
+
+const updateProductRating2 = async (productId, newRating, oldRating) => {
+    if (newRating < 1 || newRating > 5) {
+        throw new Error('Số sao mới phải nằm trong khoảng từ 1 đến 5.');
+    }
+    const product = await Product.findById(productId);
+    if (!product) {
+        throw new Error('Sản phẩm không tồn tại.');
+    }
+
+    if (oldRating < 0 || oldRating > 5) {
+        throw new Error('Số sao cũ phải nằm trong khoảng từ 0 đến 5.');
+    }
+
+    const { star, feedbackCount } = product;
+
+    const totalStars = star * feedbackCount; 
+    const updatedTotalStars = totalStars - oldRating + newRating; 
+    product.star = updatedTotalStars / feedbackCount; 
+
+    await product.save();
+
+    return product;
+};
+
+const deleteRating = async (productId, rating ) => {
+    if (rating < 1 || rating > 5) {
+        throw new Error('Số sao mới phải nằm trong khoảng từ 1 đến 5.');
+    }
+    const product = await Product.findById(productId);
+    if (!product) {
+        throw new Error('Sản phẩm không tồn tại.');
+    }
+
+    const { star, feedbackCount } = product;
+    product.feedbackCount=feedbackCount-1
+    const totalStars = star * product.feedbackCount;
+    const updatedTotalStars = totalStars - rating ; 
+    product.star = updatedTotalStars / product.feedbackCount; 
+
+    await product.save();
+
+    return product;
+};
+
+
+
 module.exports = {
+    updateProductRating,
+    deleteRating,
+    updateProductRating2,
     createProduct,
     updateProduct,
     deleteProduct,

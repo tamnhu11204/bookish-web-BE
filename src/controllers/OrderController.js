@@ -124,6 +124,22 @@ const updateActiveNow = async (req, res) => {
     }
 };
 
+const toggleFeedbackStatus = async (req, res) => {
+    const { orderId, productId } = req.params;
+console.log(orderId, productId)
+    try {
+        const updatedOrder = await OrderService.toggleFeedbackStatus(orderId, productId);
+        if (!updatedOrder) {
+            return res.status(404).json({ message: 'Order or product not found' });
+        }
+        res.status(200).json(updatedOrder);
+    } catch (error) {
+        console.error('Error toggling feedback status:', error);
+        res.status(500).json({ message: 'An error occurred while updating feedback status' });
+    }
+};
+
 module.exports = {
+    toggleFeedbackStatus,
     createOrder, getDetailOrder, getAllOrder, updateActiveNow, updateIsCancel
 };

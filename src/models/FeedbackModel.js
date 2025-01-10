@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 const feedbackSchema = new mongoose.Schema(
     {
         star: {type: Number, require: true},
-        content: {type: Number},
-        active: {type: Boolean},
+        content: {type: String},
+        img: { type: String },
 
         //khóa ngoại
         user: {

@@ -3,7 +3,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const generalAccessToken = (payload) => {
-    console.log("payload ", payload);
     const access_token = jwt.sign(
         {
             ...payload,
@@ -16,7 +15,6 @@ const generalAccessToken = (payload) => {
 };
 
 const generalRefreshToken = (payload) => {
-    console.log("payload ", payload);
     const refresh_token = jwt.sign(
         {
             ...payload,
