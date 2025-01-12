@@ -199,8 +199,28 @@ const deleteRating = async (req, res) => {
     }
 };
 
+const updateView = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id ) {
+            return res.status(400).json({ message: 'Thiếu thông tin productId hoặc starRating.' });
+        }
+
+        // Gọi service để xử lý logic
+        const updatedProduct = await ProductService.updateView(id);
+
+        res.status(200).json({
+            message: 'Cập nhật số sao thành công.',
+            product: updatedProduct,
+        });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
 
 module.exports = {
+    updateView,
     deleteRating,
     updateProductRating,
     updateProductRating2,

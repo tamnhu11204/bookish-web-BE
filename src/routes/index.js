@@ -16,6 +16,7 @@ const CategoryRouter = require ('./CategoryRouter')
 const OrderRouter = require ('./OrderRouter')
 const OrderActiveListRouter = require ('./OrderActiveListRouter')
 const FeedbackRouter = require ('./FeedbackRouter')
+const FavoriteProductRouter = require ('./FavoriteProductRouter')
 
 const routes=(app) =>{
     app.use('/api/user', UserRouter)
@@ -36,6 +37,7 @@ const routes=(app) =>{
     app.use('/api/order',OrderRouter)
     app.use('/api/order-active',OrderActiveListRouter)
     app.use('/api/feedback',FeedbackRouter)
+    app.use('/api/favorite-product',FavoriteProductRouter)
 }
 
 module.exports=routes;

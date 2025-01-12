@@ -192,7 +192,17 @@ const deleteRating = async (productId, rating ) => {
     return product;
 };
 
+const updateView = async (productId ) => {
+    const product = await Product.findById(productId);
+    if (!product) {
+        throw new Error('Sản phẩm không tồn tại.');
+    }
 
+    product.view=product.view+1
+    await product.save();
+
+    return product;
+};
 
 module.exports = {
     updateProductRating,
@@ -203,4 +213,5 @@ module.exports = {
     deleteProduct,
     getAllProduct,
     getDetailProduct,
+    updateView
 };
