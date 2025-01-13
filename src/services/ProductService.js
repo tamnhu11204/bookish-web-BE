@@ -98,7 +98,7 @@ const getAllProduct = async (limit = 10, page = 0, sort = null, filter = null) =
             message: 'Products retrieved successfully',
             data: products,
             total: totalProduct,
-            pageCurrent: page + 1,
+            pageCurrent: page+1,
             totalPage: Math.ceil(totalProduct / limit),
         };
     } catch (e) {

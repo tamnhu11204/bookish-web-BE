@@ -88,23 +88,25 @@ const deleteProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        const { limit, page, sort, filter } = req.query;
-        const response = await ProductService.getAllProduct(
-            Number(limit) || 8,
-            Number(page) || 0,
-            sort ? JSON.parse(sort) : null,
-            filter ? JSON.parse(filter) : null
-        );
-
-        return res.status(200).json(response);
+      const { limit, page, sort, filter } = req.query;
+      console.log('API called with:', { limit, page, sort, filter });  // Log các tham số
+      const response = await ProductService.getAllProduct(
+        Number(limit) || 8,
+        Number(page) || 0,
+        sort ? JSON.parse(sort) : null,
+        filter ? JSON.parse(filter) : null
+      );      
+  
+      return res.status(200).json(response);
     } catch (e) {
-        return res.status(500).json({
-            status: 'ERROR',
-            message: 'Error fetching products',
-            error: e.message,
-        });
+      return res.status(500).json({
+        status: 'ERROR',
+        message: 'Error fetching products',
+        error: e.message,
+      });
     }
-};
+  };
+  
 
 const getDetailProduct = async (req, res) => {
     try {
