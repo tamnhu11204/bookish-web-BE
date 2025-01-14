@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const createOrderActiveList = (newOrderActiveList) => {
     return new Promise(async (resolve, reject) => {
         const {order, activeList} = newOrderActiveList;
+        console.log('newOrderActiveList', newOrderActiveList)
         try {
             const checkOrderActiveList = await OrderActiveList.findOne({
                 order: order

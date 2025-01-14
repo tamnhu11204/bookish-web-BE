@@ -113,6 +113,7 @@ const updateActiveNow = async (req, res) => {
         const updatedOrder = await OrderService.updateIsCancel(id);
 
         return res.status(200).json({
+            status: 'OK',
             message: 'Order isCancel updated successfully',
             order: updatedOrder,
         });
