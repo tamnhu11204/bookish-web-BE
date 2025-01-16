@@ -221,6 +221,36 @@ const updateView = async (req, res) => {
     }
 };
 
+// Cập nhật số lượng tồn kho của sản phẩm
+const updateProductStock = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { quantityChange } = req.body;
+
+        if (!id || quantityChange === undefined) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Product ID and quantityChange are required',
+            });
+        }
+
+        // Gọi service để cập nhật stock
+        const response = await ProductService.updateProductStock(id, quantityChange);
+
+        if (response.status === 'OK') {
+            return res.status(200).json(response);
+        } else {
+            return res.status(400).json(response);  // Nếu có lỗi (ví dụ: stock âm)
+        }
+    } catch (e) {
+        return res.status(500).json({
+            status: 'ERROR',
+            message: 'Error updating product stock',
+            error: e.message,
+        });
+    }
+};
+
 module.exports = {
     updateView,
     deleteRating,
@@ -231,4 +261,5 @@ module.exports = {
     deleteProduct,
     getAllProduct,
     getDetailProduct,
+    updateProductStock
 };

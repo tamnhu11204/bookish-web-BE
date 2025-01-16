@@ -204,6 +204,41 @@ const updateView = async (productId ) => {
     return product;
 };
 
+// Cập nhật số lượng tồn kho của sản phẩm
+const updateProductStock = async (id, quantityChange) => {
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            return {
+                status: 'FAIL',
+                message: 'Product not found',
+            };
+        }
+
+        // Cập nhật stock mới
+        product.stock += quantityChange;
+
+        // Đảm bảo stock không âm
+        if (product.stock < 0) {
+            return {
+                status: 'FAIL',
+                message: 'Stock cannot be negative',
+            };
+        }
+
+        const updatedProduct = await product.save();
+        return {
+            status: 'OK',
+            message: 'Product stock updated successfully',
+            data: updatedProduct,
+        };
+    } catch (e) {
+        console.error('Error updating product stock:', e);
+        throw { status: 'ERROR', message: 'Error updating product stock', error: e.message };
+    }
+};
+
+
 module.exports = {
     updateProductRating,
     deleteRating,
@@ -213,5 +248,6 @@ module.exports = {
     deleteProduct,
     getAllProduct,
     getDetailProduct,
-    updateView
+    updateView,
+    updateProductStock
 };
