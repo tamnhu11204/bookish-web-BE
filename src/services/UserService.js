@@ -135,18 +135,23 @@ const getAllUser = (isAdmin) => {
     return new Promise(async (resolve, reject) => {
         try {
             // Nếu isAdmin được truyền là true hoặc false, lọc theo giá trị đó
-            const filter = isAdmin !== undefined ? { isAdmin: isAdmin } : {};
-            const allUser = await User.find(filter);
+            const filter = isAdmin !== undefined ? { isAdmin } : {}; // Sử dụng 'isAdmin' trực tiếp
+            const allUser = await User.find(filter); // Lấy danh sách người dùng
             resolve({
                 status: 'OK',
                 message: 'Get all user successfully',
                 data: allUser
             });
         } catch (e) {
-            reject(e);
+            reject({
+                status: 'ERROR',
+                message: 'Error fetching users',
+                error: e.message
+            });
         }
     });
 };
+
 
 
 const getDetailUser = (id) => {

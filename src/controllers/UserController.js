@@ -117,18 +117,29 @@ const getAllUser = async (req, res) => {
     try {
         const { isAdmin } = req.query;
 
-        // Chuyển giá trị isAdmin sang boolean nếu cần
-        const isAdminBool = isAdmin === 'true' ? true : isAdmin === 'false' ? false : undefined;
+        // Chuyển giá trị isAdmin sang boolean nếu cần và kiểm tra tính hợp lệ
+        let isAdminBool;
+        if (isAdmin === 'true') {
+            isAdminBool = true;
+        } else if (isAdmin === 'false') {
+            isAdminBool = false;
+        } else if (isAdmin !== undefined) {
+            // Nếu có isAdmin mà không phải 'true' hoặc 'false', trả về lỗi
+            return res.status(400).json({ message: "Invalid value for isAdmin. It should be 'true' or 'false'." });
+        }
 
         // Truyền isAdmin đã được xử lý vào UserService
         const response = await UserService.getAllUser(isAdminBool);
         return res.status(200).json(response);
     } catch (e) {
-        return res.status(404).json({
-            message: e.message
+        console.error("Error in getAllUser:", e);
+        return res.status(500).json({
+            message: "Internal server error",
+            error: e.message,
         });
     }
 };
+
 
 
 const getDetailUser = async (req, res) => {
