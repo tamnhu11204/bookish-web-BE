@@ -12,4 +12,6 @@ router.put('/update-rating/:id',  productController.updateProductRating)
 router.put('/update-rating2/:id',  productController.updateProductRating2)
 router.put('/delete-rating/:id',  productController.deleteRating)
 router.put('/update-view/:id',  productController.updateView)
+router.put('/update-stock/:id', productController.updateProductStock)
+
 module.exports=router
