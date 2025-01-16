@@ -30,8 +30,6 @@ const ShopProfileSchema = new mongoose.Schema(
         specificAddress: { type: String, default: '' },
         facebook: { type: String, default: '' },
         insta: { type: String, default: '' },
-        policy: { type: String, default: '' },
-        instruction: { type: String, default: '' }
     },
     {
         timestamps: true

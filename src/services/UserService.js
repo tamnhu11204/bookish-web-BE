@@ -232,7 +232,28 @@ const resetPassword = (userId, oldPassword, newPassword) => {
     });
 };
 
+const filterUsers = async (filters) => {
+    const query = {};
+  
+    if (filters.name) {
+      query.name = { $regex: filters.name, $options: "i" }; 
+    }
+    if (filters.phone) {
+      query.phone = { $regex: filters.phone, $options: "i" }; 
+    }
+    if (filters.email) {
+      query.email = { $regex: filters.email, $options: "i" }; 
+    }
+    if (filters.isAdmin !== undefined) {
+        query.isAdmin = filters.isAdmin; // So sánh trực tiếp với giá trị boolean
+    }
+  
+    // Truy vấn dữ liệu từ database
+    const users = await User.find(query);
+    return users;
+  };
+
 module.exports = {
     createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser,
-    toggleActiveStatus, resetPassword
+    toggleActiveStatus, resetPassword, filterUsers
 };

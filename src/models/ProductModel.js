@@ -36,10 +36,6 @@ const productSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Format'
         },
-        series: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Series'
-        },
         unit: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Unit'
