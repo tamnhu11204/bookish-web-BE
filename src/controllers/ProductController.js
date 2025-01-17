@@ -91,7 +91,7 @@ const getAllProduct = async (req, res) => {
       const { limit, page, sort, filter } = req.query;
       console.log('API called with:', { limit, page, sort, filter });  // Log các tham số
       const response = await ProductService.getAllProduct(
-        Number(limit) || 8,
+        Number(limit) ,
         Number(page) || 0,
         sort ? JSON.parse(sort) : null,
         filter ? JSON.parse(filter) : null
