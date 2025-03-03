@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const createLanguage = (newLanguage) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note} = newLanguage;
+        const {name, note,code} = newLanguage;
         try {
             const checkLanguage = await Language.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createLanguage = (newLanguage) => {
                     message: 'Tên ngôn ngữ đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdLanguage = await Language.create({name, note});
+            const createdLanguage = await Language.create({name, note,code});
             if (createdLanguage) {
                 resolve({
                     status: 'OK',

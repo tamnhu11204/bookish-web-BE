@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const createFormat = (newFormat) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note} = newFormat;
+        const {name, note,code} = newFormat;
         try {
             const checkFormat = await Format.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createFormat = (newFormat) => {
                     message: 'Tên hình thức đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdFormat = await Format.create({name, note});
+            const createdFormat = await Format.create({name, note,code});
             if (createdFormat) {
                 resolve({
                     status: 'OK',

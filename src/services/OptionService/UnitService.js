@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const createUnit = (newUnit) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note} = newUnit;
+        const {name, note, code} = newUnit;
         try {
             const checkUnit = await Unit.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createUnit = (newUnit) => {
                     message: 'Tên đơn vị đã tồn tại! Vui lòng nhập tên khác.'
                 })
             }
-            const createdUnit = await Unit.create({name, note});
+            const createdUnit = await Unit.create({name, note,code});
             if (createdUnit) {
                 resolve({
                     status: 'OK',

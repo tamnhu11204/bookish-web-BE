@@ -1,3 +1,4 @@
+const Unit = require('../../models/UnitModel');
 const UnitService = require('../../services/OptionService/UnitService');
 
 const createUnit = async (req, res) => {
@@ -13,8 +14,16 @@ const createUnit = async (req, res) => {
                 message: 'Vui lòng điền đầy đủ thông tin!'
             })
         }
+        
+        const lastUnit = await Unit.findOne().sort({ code: -1 }).select('code');
+        let newCode = 'U0001'; 
 
-        const response = await UnitService.createUnit(req.body);
+        if (lastUnit && lastUnit.code) {
+            const lastNumber = parseInt(lastUnit.code.slice(1)); 
+            newCode = `U${String(lastNumber + 1).padStart(4, '0')}`; 
+        }
+        const newUnit = { code: newCode, name, note };
+        const response = await UnitService.createUnit(newUnit);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({

@@ -1,3 +1,4 @@
+const Language = require('../../models/LanguageModel');
 const LanguageService = require('../../services/OptionService/LanguageService');
 
 const createLanguage = async (req, res) => {
@@ -13,8 +14,15 @@ const createLanguage = async (req, res) => {
                 message: 'Vui lòng điền đầy đủ thông tin.'
             });
         }
+        const lastLanguage = await Language.findOne().sort({ code: -1 }).select('code');
+        let newCode = 'L0001'; 
 
-        const response = await LanguageService.createLanguage(req.body);
+        if (lastLanguage && lastLanguage.code) {
+            const lastNumber = parseInt(lastLanguage.code.slice(1)); 
+            newCode = `L${String(lastNumber + 1).padStart(4, '0')}`; 
+        }
+        const newLanguage = { code: newCode, name, note };
+        const response = await LanguageService.createLanguage(newLanguage);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({

@@ -3,12 +3,10 @@ const mongoose = require('mongoose')
 
 const publisherSchema = new mongoose.Schema(
     {
+        code: {type: String, required: true, unique: true},
         name: {type: String, required: true, unique: true},
         note: {type: String},
-        img: {
-            data: Buffer,
-            contentType: String
-        }
+        img:{type: String}
     },
     {
         timestamps: true,

@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 
 const languageSchema = new mongoose.Schema(
     {
+        code: {type: String, required: true, unique: true},
         name: {type: String, required: true, unique: true},
         note: {type: String},
     },

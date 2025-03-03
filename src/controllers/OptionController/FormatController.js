@@ -1,3 +1,4 @@
+const Format = require('../../models/FormatModel');
 const FormatService = require('../../services/OptionService/FormatService');
 
 const createFormat = async (req, res) => {
@@ -13,8 +14,15 @@ const createFormat = async (req, res) => {
                 message: 'Vui lòng điền đầy đủ thông tin.'
             });
         }
+        const lastFormat = await Format.findOne().sort({ code: -1 }).select('code');
+        let newCode = 'F0001'; 
 
-        const response = await FormatService.createFormat(req.body);
+        if (lastFormat && lastFormat.code) {
+            const lastNumber = parseInt(lastFormat.code.slice(1)); 
+            newCode = `F${String(lastNumber + 1).padStart(4, '0')}`; 
+        }
+        const newFormat = { code: newCode, name, note };
+        const response = await FormatService.createFormat(newFormat);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({

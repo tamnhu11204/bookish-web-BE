@@ -1,50 +1,70 @@
+const Publisher = require('../../models/PublisherModel');
 const PublisherService = require('../../services/OptionService/PublisherService');
+
 
 const createPublisher = async (req, res) => {
     try {
-        const {name, note, img} = req.body;
-        
-        console.log('req.body', req.body);
+        const { name, note } = req.body;
 
-        // Kiểm tra trường nào bị thiếu
-        if (!name || name.trim() === ''  ) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'Vui lòng điền đầy đủ thông tin.'
-            });
+        if (!name) {
+            return res.status(400).json({ status: 'ERR', message: 'Thiếu tên nhà xuất bản!' });
         }
 
-        const response = await PublisherService.createPublisher(req.body);
+        if (!req.file) {
+            return res.status(400).json({ status: 'ERR', message: 'Thiếu ảnh nhà xuất bản!' });
+        }
+
+        const lastPublisher = await Publisher.findOne().sort({ code: -1 }).select('code');
+        let newCode = 'P0001'; 
+
+        if (lastPublisher && lastPublisher.code) {
+            const lastNumber = parseInt(lastPublisher.code.slice(1)); 
+            newCode = `P${String(lastNumber + 1).padStart(4, '0')}`; 
+        }
+
+        const img = req.file.path;
+        const newPublisher = { code: newCode, name, note, img };
+
+        //console.log("Dữ liệu trước khi lưu:", newPublisher); 
+
+        const response = await PublisherService.createPublisher(newPublisher);
         return res.status(200).json(response);
     } catch (e) {
-        return res.status(404).json({
-            message: e.message
-        });
+        console.error("Lỗi khi tạo danh mục:", e); 
+        return res.status(500).json({ message: e.message });
     }
 };
 
+
+
+
 const updatePublisher = async (req, res) => {
     try {
-        const PublisherID=req.params.id
-        const data=req.body
-        const {name, note, img} = req.body;
-        console.log('req.body:', req.body);
+        console.log("Body:", req.body);
+        console.log("File:", req.file);
 
-        if (!name || name.trim() === ""  ) {
-            return res.status(200).json({
-                status: 'ERR',
-                message: 'Vui lòng điền đầy đủ thông tin.'
-            });
+        const { name, note } = req.body;
+        let updatedImg = req.body.img; 
+
+        if (req.file) {
+            updatedImg = req.file.path; 
         }
 
-        
+        const updatedPublisher = await Publisher.findByIdAndUpdate(
+            req.params.id,
+            { name, note, img: updatedImg },
+            { new: true }
+        );
 
-        const response = await PublisherService.updatePublisher(PublisherID, req.body);
-        return res.status(200).json(response);
-    } catch (e) {
-        return res.status(404).json({
-            message: e.message
-        });
+        if (!updatedPublisher) {
+            return res.status(404).json({ message: "Không tìm thấy nhà xuất bản!" });
+        }
+
+        console.log("Updated Publisher:", updatedPublisher);
+        return res.status(200).json(updatedPublisher);
+    } catch (error) {
+        console.error("Error:", error);
+        return res.status(500).json({ message: error.message });
     }
 };
 

@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const createPublisher = (newPublisher) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note, img} = newPublisher;
+        const {name, note, img, code} = newPublisher;
         try {
             const checkPublisher = await Publisher.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createPublisher = (newPublisher) => {
                     message: 'Tên nhà cung cấp đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdPublisher = await Publisher.create({name, note,img});
+            const createdPublisher = await Publisher.create({name, note,img, code});
             if (createdPublisher) {
                 resolve({
                     status: 'OK',
