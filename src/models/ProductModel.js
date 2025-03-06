@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema(
     {
+        code: {type: String, required: true, unique: true},
         name: { type: String, required: true, unique: true }, // Tên sản phẩm bắt buộc và duy nhất
         author: { type: String, required: true }, // Tác giả bắt buộc
         publishDate: { type: Date }, // Ngày xuất bản không bắt buộc
@@ -15,7 +16,7 @@ const productSchema = new mongoose.Schema(
         price: { type: Number, required: true }, // Giá sản phẩm bắt buộc
         discount: { type: Number, default: 0 }, // Phần trăm giảm giá
         stock: { type: Number, default: 0 }, // Tồn kho
-        img: { type: [String] },
+        img: { type: [String], default: [] },
         star: { type: Number, default: 0 }, // Số sao
         favorite: { type: Number, default: 0 }, // Số yêu thích
         view: { type: Number, default: 0 }, // Lượt xem

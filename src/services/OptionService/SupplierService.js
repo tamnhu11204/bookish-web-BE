@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const createSupplier = (newSupplier) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note, img} = newSupplier;
+        const {name, note, img, code} = newSupplier;
         try {
             const checkSupplier = await Supplier.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createSupplier = (newSupplier) => {
                     message: 'Tên nhà cung cấp đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdSupplier = await Supplier.create({name, note,img});
+            const createdSupplier = await Supplier.create({name, note,img,code});
             if (createdSupplier) {
                 resolve({
                     status: 'OK',

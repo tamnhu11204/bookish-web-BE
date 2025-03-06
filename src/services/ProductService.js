@@ -3,7 +3,7 @@ const Product = require('../models/ProductModel');
 // Tạo sản phẩm
 const createProduct = async (newProduct) => {
     try {
-        const {
+        const {code,
             name, author, publishDate, weight, height, width, length, page, description, price,
             discount, stock, img, star, favorite, view, publisher, language, format, unit, category, supplier
         } = newProduct;

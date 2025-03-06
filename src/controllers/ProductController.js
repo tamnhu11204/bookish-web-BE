@@ -1,23 +1,36 @@
+const Product = require('../models/ProductModel');
 const ProductService = require('../services/ProductService');
 
 const createProduct = async (req, res) => {
     try {
-        const {
-            name, author, publishDate, weight, height, width, length, page, description, price,
-            discount, stock, img, star, favorite, view, publisher, language, format, unit, category, supplier
-        } = req.body;
-        console.log('req.body', req.body);
+        const { name, author, publishDate, weight, height, width, length, page, description, price, 
+            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier } = req.body;
 
-        // Kiểm tra các trường bắt buộc
         if (!name || !author || !price) {
-            return res.status(400).json({
-                status: 'ERR',
-                message: 'Missing required fields',
-            });
+            return res.status(400).json({ status: 'ERR', message: 'Thiếu !' });
         }
 
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ status: 'ERR', message: 'Thiếu ảnh sản phẩm!' });
+        }
 
-        const response = await ProductService.createProduct(req.body);
+        const lastProduct = await Product.findOne().sort({ code: -1 }).select('code');
+        let newCode = 'PD0001'; 
+
+        if (lastProduct && lastProduct.code && /^PD\d{4}$/.test(lastProduct.code)) { 
+            const lastNumber = parseInt(lastProduct.code.slice(2), 10); // slice(2) thay vì slice(1)
+            newCode = `PD${String(lastNumber + 1).padStart(4, '0')}`;
+        } else {
+            newCode = 'PD0001'; // Trường hợp không có sản phẩm nào
+        }
+        
+
+        const imgUrls = req.files.map(file => file.path);
+        const newProduct = { code: newCode, name, author, publishDate, weight, height, width, length, page, description, price, 
+            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier, img: imgUrls };
+
+
+        const response = await ProductService.createProduct(newProduct);
         return res.status(201).json(response);
     } catch (e) {
         return res.status(500).json({
@@ -30,28 +43,28 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const productID = req.params.id;
-        if (!productID) {
-            return res.status(400).json({
-                status: 'ERR',
-                message: 'Product ID is required',
-            });
+        const { name, author, publishDate, weight, height, width, length, page, description, price, 
+            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier } = req.body;
+
+        let updatedImgs = req.body.existingImages || []; 
+
+        if (req.files && req.files.length > 0) {
+            updatedImgs = [...updatedImgs, ...req.files.map(file => file.path)]; 
         }
 
-        // Đảm bảo img là mảng khi cập nhật sản phẩm
-        if (req.body.img && !Array.isArray(req.body.img)) {
-            req.body.img = [req.body.img]; // Chuyển img thành mảng nếu không phải mảng
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            { name, author, publishDate, weight, height, width, length, page, description, price, 
+                discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier, img: updatedImgs },
+            { new: true }
+        );
+
+        if (!updatedProduct) {
+            return res.status(404).json({ message: "Không tìm thấy sản phẩm!" });
         }
 
-        const response = await ProductService.updateProduct(productID, req.body);
-        if (!response.data) {
-            return res.status(404).json({
-                status: 'ERR',
-                message: 'Product not found',
-            });
-        }
-
-        return res.status(200).json(response);
+        console.log("Updated Product:", updatedProduct);
+        return res.status(200).json(updatedProduct);
     } catch (e) {
         return res.status(500).json({
             status: 'ERROR',
@@ -60,6 +73,7 @@ const updateProduct = async (req, res) => {
         });
     }
 };
+
 
 const deleteProduct = async (req, res) => {
     try {
