@@ -3,18 +3,17 @@ const bcrypt = require("bcrypt");
 
 const createCategory = (newCategory) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note, img, code} = newCategory;
+        const { name, note, img, code, parent, slug } = newCategory;
         try {
-            const checkCategory = await Category.findOne({
-                name: name
-            })
-            if (checkCategory !== null) {
-                resolve({
+            const checkCategory = await Category.findOne({ name });
+            if (checkCategory) {
+                return resolve({
                     status: 'ERR',
                     message: 'Tên danh mục đã tồn tại! Vui lòng nhập tên khác.'
-                })
+                });
             }
-            const createdCategory = await Category.create({name, note, img, code});
+
+            const createdCategory = await Category.create({ name, note, img, code, parent, slug });
             if (createdCategory) {
                 resolve({
                     status: 'OK',
@@ -28,21 +27,22 @@ const createCategory = (newCategory) => {
     });
 };
 
+
 const updateCategory = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const checkCategory = await Category.findOne({ _id: id })
-            if (checkCategory === null) {
-                resolve({
-                    status: 'OK',
-                    message: 'The Category is not defined'
-                })
+            const checkCategory = await Category.findOne({ _id: id });
+            if (!checkCategory) {
+                return resolve({
+                    status: 'ERR',
+                    message: 'Danh mục không tồn tại!'
+                });
             }
 
-            const updatedCategory = await Category.findByIdAndUpdate(id, data, { new: true })
+            const updatedCategory = await Category.findByIdAndUpdate(id, data, { new: true });
             resolve({
                 status: 'OK',
-                message: 'Success',
+                message: 'Cập nhật danh mục thành công!',
                 data: updatedCategory
             });
         } catch (e) {
@@ -50,6 +50,7 @@ const updateCategory = (id, data) => {
         }
     });
 };
+
 
 const deleteCategory = (id) => {
     return new Promise(async (resolve, reject) => {
@@ -112,6 +113,29 @@ const getDetailCategory = (id) => {
     });
 };
 
+const getCategoryTree = () => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const categories = await Category.find().lean();
+
+            const buildTree = (parentId = null) => {
+                return categories
+                    .filter(cat => String(cat.parent) === String(parentId))
+                    .map(cat => ({ ...cat, children: buildTree(cat._id) }));
+            };
+
+            resolve({
+                status: 'OK',
+                message: 'Success',
+                data: buildTree()
+            });
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
 
-module.exports = { createCategory, updateCategory, deleteCategory, getAllCategory, getDetailCategory};
+
+
+module.exports = { createCategory, updateCategory, deleteCategory, getAllCategory, getDetailCategory, getCategoryTree};

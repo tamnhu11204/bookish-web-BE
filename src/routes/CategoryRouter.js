@@ -8,5 +8,6 @@ router.put('/update/:id', uploadCloudinary.single('img'), CategoryController.upd
 router.get('/get-detail/:id',CategoryController.getDetailCategory)
 router.delete('/delete/:id',CategoryController.deleteCategory)
 router.get('/get-all',CategoryController.getAllCategory)
+router.get('/get-tree',CategoryController.getCategoryTree)
 
 module.exports=router
