@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 
 const importSchema = new mongoose.Schema(
     {
-        code: {type: String, required: true, unique: true},
         importItems: [
             {
                 product: {

@@ -76,6 +76,8 @@ const createImport = async (newImport) => {
     }
 };
 
+
+
 // Lấy tất cả các lần nhập hàng
 const getAllImports = (userId) => {
     return new Promise(async (resolve, reject) => {
@@ -168,39 +170,64 @@ const updateImportStatus = async (importId, status) => {
 };
 
 // Xóa một lần nhập hàng
-const deleteImport = async (importId) => {
+const deleteImport = async (id) => {
     try {
-        const importOrder = await Import.findById(importId);
+        const session = await Import.startSession();
+        session.startTransaction();
 
-        if (!importOrder) {
-            throw new Error('Import not found');
-        }
-
-        // Nếu đã nhập hàng (completed), hoàn lại tồn kho trước khi xóa
-        if (importOrder.status === 'completed') {
-            for (const item of importOrder.importItems) {
-                const { product, quantity } = item;
-                const productItem = await Product.findByIdAndUpdate(
-                    product,
-                    { $inc: { stock: -quantity } }, // Giảm tồn kho về như cũ
-                    { new: true }
-                );
-
-                if (!productItem) {
-                    throw new Error(`Product ${product} not found`);
-                }
+        try {
+            // Tìm lần nhập hàng cần xóa
+            const importToDelete = await Import.findById(id).session(session);
+            if (!importToDelete) {
+                throw new Error('Không tìm thấy lần nhập hàng để xóa.');
             }
+
+            // Giảm stock cho từng sản phẩm trong importItems
+            for (const item of importToDelete.importItems) {
+                const { product, quantity } = item;
+
+                // Tìm sản phẩm
+                const productItem = await Product.findById(product).session(session);
+                if (!productItem) {
+                    throw new Error(`Sản phẩm ${product} không tồn tại.`);
+                }
+
+                // Đảm bảo stock không âm
+                const newStock = productItem.stock - quantity;
+                if (newStock < 0) {
+                    throw new Error(`Không thể xóa: Số lượng tồn kho của sản phẩm ${productItem.name} sẽ âm (${newStock}).`);
+                }
+
+                // Giảm stock
+                await Product.findByIdAndUpdate(
+                    product,
+                    { $inc: { stock: -quantity } },
+                    { session }
+                );
+            }
+
+            // Xóa lần nhập hàng
+            await Import.findByIdAndDelete(id).session(session);
+
+            // Hoàn tất transaction
+            await session.commitTransaction();
+            session.endSession();
+
+            return {
+                status: 'OK',
+                message: 'Xóa lần nhập hàng thành công',
+            };
+        } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            throw error;
         }
-
-        const deletedImport = await Import.findByIdAndDelete(importId);
-
-        return {
-            status: 'OK',
-            message: 'Import deleted successfully',
-            data: deletedImport
-        };
     } catch (error) {
-        throw new Error(`Error deleting import: ${error.message}`);
+        throw {
+            status: 'ERROR',
+            message: 'Lỗi khi xóa lần nhập hàng',
+            error: error.message,
+        };
     }
 };
 
