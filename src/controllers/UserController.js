@@ -1,5 +1,6 @@
 const UserService = require('../services/UserService');
 const JwtService = require('../services/JwtService');
+const User = require('../models/UserModel');
 
 const createUser = async (req, res) => {
     try {
@@ -237,26 +238,27 @@ const resetPassword = async (req, res) => {
 
 const filterUsers = async (req, res) => {
     try {
-      const { name, phone, email, isAdmin } = req.query;
-  
-      // Gọi service để lọc người dùng
-      const users = await UserService.filterUsers({ name, phone, email, isAdmin });
-  
-      // Trả về kết quả
-      return res.status(200).json({
-        status: "OK",
-        message: "Filtered users successfully.",
-        data: users,
-      });
+        const { name, phone, email, isAdmin } = req.query;
+
+        // Gọi service để lọc người dùng
+        const users = await UserService.filterUsers({ name, phone, email, isAdmin });
+
+        // Trả về kết quả
+        return res.status(200).json({
+            status: "OK",
+            message: "Filtered users successfully.",
+            data: users,
+        });
     } catch (error) {
-      console.error("Error filtering users: ", error);
-      return res.status(500).json({
-        status: "ERR",
-        message: "An error occurred while filtering users.",
-        error: error.message,
-      });
+        console.error("Error filtering users: ", error);
+        return res.status(500).json({
+            status: "ERR",
+            message: "An error occurred while filtering users.",
+            error: error.message,
+        });
     }
-  };
+};
+
 
 
 module.exports = {

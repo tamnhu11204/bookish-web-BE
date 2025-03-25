@@ -5,6 +5,7 @@ const routes = require('./routes')
 const bodyParser = require('body-parser')
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const authRouter = require("../src/routes/AuthRouter");
 
 dotenv.config()
 
@@ -21,6 +22,8 @@ app.use(
 
 app.use(bodyParser.json())
 app.use(cookieParser())
+// thêm api
+app.use("/api/auth", authRouter);
 
 
 // Cấu hình giới hạn tải lên (ví dụ: 50MB)
