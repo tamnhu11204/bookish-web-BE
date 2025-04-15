@@ -18,4 +18,7 @@ router.put('/update-status/:id', importController.updateImportStatus);
 // Xóa một lần nhập hàng
 router.delete('/delete/:id', importController.deleteImport);
 
+// Cập nhật lần nhập hàng
+router.put('/update/:id', importController.updateImport);
+
 module.exports = router;

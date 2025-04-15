@@ -99,10 +99,39 @@ const deleteImport = async (req, res) => {
     }
 };
 
+// Cập nhật một lần nhập hàng
+const updateImport = async (req, res) => {
+    const { id } = req.params;
+    const { importItems, totalImportPrice } = req.body;
+
+    try {
+        // Kiểm tra dữ liệu đầu vào
+        if (!importItems || totalImportPrice === null) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'Missing required fields: importItems and totalImportPrice are required',
+            });
+        }
+
+        const response = await ImportService.updateImport(id, req.body);
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Import updated successfully',
+            import: response.data,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            status: 'ERROR',
+            message: error.message || 'Error updating import',
+        });
+    }
+};
+
 module.exports = {
     createImport,
     getAllImports,
     getImportById,
     updateImportStatus,
-    deleteImport
+    deleteImport,
+    updateImport
 };
