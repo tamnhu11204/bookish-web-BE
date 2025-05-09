@@ -229,12 +229,106 @@ const deleteImport = async (id) => {
             error: error.message,
         };
     }
+
+
 };
+
+// Cập nhật một lần nhập hàng
+const updateImport = async (importId, updatedImport) => {
+    try {
+      const session = await Import.startSession();
+      session.startTransaction();
+  
+      try {
+        // Tìm lần nhập hàng hiện tại
+        const existingImport = await Import.findById(importId).session(session);
+        if (!existingImport) {
+          throw new Error('Không tìm thấy lần nhập hàng để cập nhật.');
+        }
+  
+        const { importItems: newItems, totalImportPrice } = updatedImport;
+  
+        // So sánh và cập nhật tồn kho dựa trên sự thay đổi số lượng
+        for (let i = 0; i < newItems.length; i++) {
+          const newItem = newItems[i];
+          const oldItem = existingImport.importItems[i];
+  
+          if (!oldItem) {
+            throw new Error('Dữ liệu không hợp lệ: Số lượng mục nhập không khớp.');
+          }
+  
+          const productId = newItem.product;
+          const oldQuantity = oldItem.quantity;
+          const newQuantity = newItem.quantity;
+          const quantityChange = newQuantity - oldQuantity; // Sự thay đổi số lượng
+  
+          // Tìm sản phẩm để kiểm tra và cập nhật tồn kho
+          const product = await Product.findById(productId).session(session);
+          if (!product) {
+            throw new Error(`Sản phẩm ${productId} không tồn tại.`);
+          }
+  
+          // Đảm bảo tồn kho không âm
+          const newStock = product.stock + quantityChange;
+          if (newStock < 0) {
+            throw new Error(
+              `Không thể cập nhật: Số lượng tồn kho của sản phẩm ${product.name} sẽ âm (${newStock}).`
+            );
+          }
+  
+          // Cập nhật tồn kho
+          await Product.findByIdAndUpdate(
+            productId,
+            { $inc: { stock: quantityChange } },
+            { session }
+          );
+        }
+  
+        // Cập nhật lần nhập hàng
+        const updatedImportRecord = await Import.findByIdAndUpdate(
+          importId,
+          {
+            importItems: newItems.map(item => ({
+              product: item.product,
+              importPrice: item.importPrice,
+              quantity: item.quantity,
+            })),
+            totalImportPrice,
+          },
+          { new: true, session }
+        )
+          .populate('importItems.product')
+          .populate('supplier')
+          .populate('user');
+  
+        // Hoàn tất transaction
+        await session.commitTransaction();
+        session.endSession();
+  
+        return {
+          status: 'OK',
+          message: 'Cập nhật lần nhập hàng thành công',
+          data: updatedImportRecord,
+        };
+      } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
+        throw error;
+      }
+    } catch (error) {
+      throw {
+        status: 'ERROR',
+        message: 'Lỗi khi cập nhật lần nhập hàng',
+        error: error.message,
+      };
+    }
+  };
 
 module.exports = {
     createImport,
     getAllImports,
     getImportById,
     updateImportStatus,
-    deleteImport
+    deleteImport,
+    updateImport
 };
