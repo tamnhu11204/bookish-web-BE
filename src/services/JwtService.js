@@ -8,7 +8,7 @@ const generalAccessToken = (payload) => {
             ...payload,
         },
         process.env.ACCESS_TOKEN,
-        { expiresIn: "30s" }
+        { expiresIn: "30h" }
     );
 
     return access_token;

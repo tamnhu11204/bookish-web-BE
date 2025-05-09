@@ -19,6 +19,7 @@ const FeedbackRouter = require ('./FeedbackRouter')
 const FavoriteProductRouter = require ('./FavoriteProductRouter')
 const StaticPageRouter = require ('./StaticPageRouter')
 const ImportRouter = require ('./ImportRouter')
+const LiveChatMessageRouter = require ('./LiveChatMessageRouter')
 
 const routes=(app) =>{
     app.use('/api/user', UserRouter)
@@ -42,6 +43,7 @@ const routes=(app) =>{
     app.use('/api/favorite-product',FavoriteProductRouter)
     app.use('/api/static-page',StaticPageRouter)
     app.use('/api/imports',ImportRouter)
+    app.use('/api/chat', LiveChatMessageRouter)
 }
 
 module.exports=routes;

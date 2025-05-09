@@ -42,40 +42,35 @@ const loginUser = (userLogin) => {
     return new Promise(async (resolve, reject) => {
         const { email, password } = userLogin;
         try {
-            const checkUser = await User.findOne({
-                email: email
-            })
+            const checkUser = await User.findOne({ email });
             if (checkUser === null) {
                 resolve({
                     status: 'ERR',
                     message: 'Email không tồn tại!'
-                })
+                });
             }
-            const comparePassword = bcrypt.compareSync(password, checkUser.password)
-            //console.log('comparePassword', comparePassword)
+            const comparePassword = bcrypt.compareSync(password, checkUser.password);
             if (!comparePassword) {
                 resolve({
                     status: 'ERR',
-                    message: 'Mật khẩu không chính xác!',
+                    message: 'Mật khẩu không chính xác!'
                 });
             }
-
             const access_token = await generalAccessToken({
-                id: checkUser.id,
+                id: checkUser._id,
                 isAdmin: checkUser.isAdmin
-            })
-
+            });
             const refresh_token = await generalRefreshToken({
-                id: checkUser.id,
+                id: checkUser._id,
                 isAdmin: checkUser.isAdmin
-            })
-
-            console.log('access_token', access_token)
+            });
             resolve({
                 status: 'OK',
                 message: 'Success',
+                userId: checkUser._id.toString(), // Thêm userId
                 access_token,
                 refresh_token
+
             });
         } catch (e) {
             reject(e);
@@ -239,24 +234,24 @@ const resetPassword = (userId, oldPassword, newPassword) => {
 
 const filterUsers = async (filters) => {
     const query = {};
-  
+
     if (filters.name) {
-      query.name = { $regex: filters.name, $options: "i" }; 
+        query.name = { $regex: filters.name, $options: "i" };
     }
     if (filters.phone) {
-      query.phone = { $regex: filters.phone, $options: "i" }; 
+        query.phone = { $regex: filters.phone, $options: "i" };
     }
     if (filters.email) {
-      query.email = { $regex: filters.email, $options: "i" }; 
+        query.email = { $regex: filters.email, $options: "i" };
     }
     if (filters.isAdmin !== undefined) {
         query.isAdmin = filters.isAdmin; // So sánh trực tiếp với giá trị boolean
     }
-  
+
     // Truy vấn dữ liệu từ database
     const users = await User.find(query);
     return users;
-  };
+};
 
 module.exports = {
     createUser, loginUser, updateUser, deleteUser, getAllUser, getDetailUser,

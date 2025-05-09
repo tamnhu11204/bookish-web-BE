@@ -6,27 +6,30 @@ dotenv.config();
 //set auth cho admin
 const authMiddleWare = (req, res, next) => {
   const token = req.headers.token?.split(" ")[1];
-  // verify a token symmetric
+  if (!token) {
+    return res.status(401).json({ status: "ERR", message: "Token missing" });
+  }
+
   jwt.verify(token, process.env.ACCESS_TOKEN, function (err, user) {
     if (err) {
-      return res.status(404).json({
-        status: "ERR",
-        message: "The authentication ",
-      });
+      console.log('Error verifying token:', err);
+      return res.status(401).json({ status: "ERR", message: "The authentication failed." });
     }
 
-    //nếu có user isAdmin
+    req.user = user; // ⚠️ Cần dòng này để controller có thể dùng req.user
+
     if (user?.isAdmin) {
-      console.log("true");
       next();
     } else {
-      return res.status(404).json({
+      return res.status(403).json({
         status: "ERR",
-        message: "The authentication ",
+        message: "Forbidden: Only admins can access this route.",
       });
     }
   });
 };
+
+
 
 //set auth cho user lấy info của mình
 const authUserMiddleWare = (req, res, next) => {
