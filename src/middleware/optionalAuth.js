@@ -3,15 +3,22 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const optionalAuth = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
         req.user = null;
         return next();
     }
+
+    const token = authHeader.split(' ')[1];
+
     jwt.verify(token, process.env.ACCESS_TOKEN, (err, user) => {
         if (err) {
-            console.warn('Invalid or expired token:', err);
-            req.user = null; // Tiếp tục như guest
+            console.warn('Invalid or expired token:', err.message); // log message ngắn gọn hơn
+            console.log('Received Authorization header:', req.headers);
+            console.log('Extracted token:', token);
+
+            req.user = null;
             return next();
         }
         req.user = user;

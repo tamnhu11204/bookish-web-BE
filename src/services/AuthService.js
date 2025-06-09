@@ -1,6 +1,4 @@
 const User = require("../models/UserModel");
-const { OAuth2Client } = require("google-auth-library");
-const axios = require("axios");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
@@ -8,7 +6,7 @@ const bcrypt = require("bcrypt");
 // Quên mật khẩu
 const forgotPassword = async (email) => {
   try {
-    const user = await User.findOne({ email }); // Giữ nguyên email
+    const user = await User.findOne({ email });
     if (!user) {
       throw new Error("Email không tồn tại!");
     }
@@ -26,6 +24,9 @@ const forgotPassword = async (email) => {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+      tls: {
+        rejectUnauthorized: process.env.NODE_ENV === "development" ? false : true,
+      },
     });
 
     console.log(`Gửi OTP đến: ${email}, OTP: ${otp}`);
@@ -37,9 +38,16 @@ const forgotPassword = async (email) => {
       text: `Mã OTP của bạn là: ${otp}`,
     };
 
-    await transporter.sendMail(mailOptions);
-    return { success: true, message: "OTP đã được gửi!" };
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log("Email OTP gửi thành công!");
+      return { success: true, message: "OTP đã được gửi!" };
+    } catch (emailError) {
+      console.error("Lỗi khi gửi email:", emailError);
+      throw new Error("Không thể gửi email OTP. Vui lòng thử lại.");
+    }
   } catch (error) {
+    console.error("Lỗi trong forgotPassword:", error);
     throw new Error(error.message);
   }
 };
@@ -48,12 +56,12 @@ const forgotPassword = async (email) => {
 const verifyOTP = async (email, otp) => {
   try {
     const user = await User.findOne({
-      email, // Sửa từ userEmail thành email
+      email,
       resetPasswordOTP: otp,
       resetPasswordExpires: { $gt: Date.now() },
     });
 
-    console.log("User tìm thấy:", user); // Debug
+    console.log("User tìm thấy:", user);
     console.log("OTP trong DB:", user?.resetPasswordOTP);
     console.log("Hạn OTP:", user?.resetPasswordExpires);
 
@@ -67,6 +75,7 @@ const verifyOTP = async (email, otp) => {
 
     return { success: true, message: "OTP hợp lệ!" };
   } catch (error) {
+    console.error("Lỗi trong verifyOTP:", error);
     throw new Error(error.message);
   }
 };
@@ -74,7 +83,7 @@ const verifyOTP = async (email, otp) => {
 // Đặt lại mật khẩu
 const resetPassword = async (email, newPassword) => {
   try {
-    const user = await User.findOne({ email }); // Sửa từ userEmail thành email
+    const user = await User.findOne({ email });
     if (!user) {
       throw new Error("Người dùng không tồn tại!");
     }
@@ -91,57 +100,13 @@ const resetPassword = async (email, newPassword) => {
 
     return { success: true, message: "Đặt lại mật khẩu thành công!" };
   } catch (error) {
+    console.error("Lỗi trong resetPassword:", error);
     throw new Error(error.message);
   }
-};
-
-// Đăng nhập bằng Google
-const loginWithGoogle = async (token) => {
-  const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-  const ticket = await client.verifyIdToken({
-    idToken: token,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  });
-  const payload = Doctor.getPayload();
-  const { email, name, picture } = payload;
-
-  let user = await User.findOne({ email }); // Sửa từ userEmail thành email
-  if (!user) {
-    user = new User({
-      email, // Sửa từ userEmail thành email
-      userName: name,
-      userImage: picture,
-    });
-    await user.save();
-  }
-
-  return { success: true, user };
-};
-
-// Đăng nhập bằng Facebook
-const loginWithFacebook = async (token) => {
-  const response = await axios.get(
-    `https://graph.facebook.com/v12.0/me?fields=id,name,email,picture&access_token=${token}`
-  );
-  const { email, name, picture } = response.data;
-
-  let user = await User.findOne({ email }); // Sửa từ userEmail thành email
-  if (!user) {
-    user = new User({
-      email, // Sửa từ userEmail thành email
-      userName: name,
-      userImage: picture.data.url,
-    });
-    await user.save();
-  }
-
-  return { success: true, user };
 };
 
 module.exports = {
   forgotPassword,
   verifyOTP,
   resetPassword,
-  loginWithGoogle,
-  loginWithFacebook,
 };

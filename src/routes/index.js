@@ -20,7 +20,6 @@ const FavoriteProductRouter = require('./FavoriteProductRouter')
 const StaticPageRouter = require('./StaticPageRouter')
 const ImportRouter = require('./ImportRouter')
 const recommendationRoutes = require('./RecommendationRouter');
-
 const LiveChatMessageRouter = require('./LiveChatMessageRouter')
 
 const routes = (app) => {

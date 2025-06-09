@@ -38,30 +38,30 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const loginWithGoogle = async (req, res) => {
-  try {
-    const { token } = req.body; // Token từ Google
-    const result = await authService.loginWithGoogle(token);
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+// const loginWithGoogle = async (req, res) => {
+//   try {
+//     const { token } = req.body; // Token từ Google
+//     const result = await authService.loginWithGoogle(token);
+//     res.status(200).json(result);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
-const loginWithFacebook = async (req, res) => {
-  try {
-    const { token } = req.body; // Token từ Facebook
-    const result = await authService.loginWithFacebook(token);
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+// const loginWithFacebook = async (req, res) => {
+//   try {
+//     const { token } = req.body; // Token từ Facebook
+//     const result = await authService.loginWithFacebook(token);
+//     res.status(200).json(result);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 
 module.exports = {
   forgotPassword,
   verifyOTP,
   resetPassword,
-  loginWithGoogle,
-  loginWithFacebook,
+  // loginWithGoogle,
+  // loginWithFacebook,
 };

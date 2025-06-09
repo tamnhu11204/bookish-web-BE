@@ -3,15 +3,14 @@ const { v4: uuidv4 } = require('uuid');
 
 const sendMessage = async (req, res) => {
     try {
-        const { message, userId: bodyUserId } = req.body;
-        const sender = 'user';
+        const { message, userId: bodyUserId, sender = 'user' } = req.body;
         if (!message) {
             return res.status(400).json({ message: 'Thiếu nội dung tin nhắn' });
         }
         const userId = req.user?.id || bodyUserId || `guest_${uuidv4()}`;
-        console.log('💬 Received message:', { userId, message, source: req.user?.id ? 'auth' : bodyUserId ? 'body' : 'generated' });
+        console.log('💬 Received message:', { userId, message, sender, source: req.user?.id ? 'auth' : bodyUserId ? 'body' : 'generated' });
         const savedMessage = await LiveChatMessageService.createMessage({
-            sender,
+            sender, // Có thể là 'user', 'admin', hoặc 'bot'
             userId,
             message,
         });
@@ -36,7 +35,6 @@ const getMessagesByUser = async (req, res) => {
 
 const getAllUsersWithLatestMessage = async (req, res) => {
     try {
-        // Middleware đã xác thực quyền admin, chỉ cần gọi service
         const latestMessages = await LiveChatMessageService.getAllUsersWithLatestMessage();
         res.json(latestMessages);
     } catch (error) {
@@ -44,7 +42,6 @@ const getAllUsersWithLatestMessage = async (req, res) => {
         res.status(500).json({ message: 'Không thể lấy danh sách' });
     }
 };
-
 
 const adminReply = async (req, res) => {
     try {
@@ -70,15 +67,17 @@ const adminReply = async (req, res) => {
 
 const requestSupport = async (req, res) => {
     try {
-        const { userId: bodyUserId, message } = req.body;
+        const { userId: bodyUserId, message, context = {}, platform = "website" } = req.body;
         const userId = req.user?.id || bodyUserId || `guest_${uuidv4()}`;
-        console.log('💬 Received support request:', { userId, message, source: req.user?.id ? 'auth' : bodyUserId ? 'body' : 'generated' });
-        const savedMessage = await LiveChatMessageService.requestSupport(userId, message);
+        console.log('💬 Received support request:', { userId, message, context, platform, source: req.user?.id ? 'auth' : bodyUserId ? 'body' : 'generated' });
+        const savedMessage = await LiveChatMessageService.requestSupport(userId, message, context, platform);
         if (req.io) {
             req.io.emit('supportRequest', {
                 userId,
                 message: savedMessage.message,
                 timestamp: savedMessage.timestamp,
+                context,
+                platform
             });
         }
         res.status(201).json(savedMessage);
