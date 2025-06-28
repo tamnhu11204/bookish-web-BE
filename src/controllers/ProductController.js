@@ -3,7 +3,7 @@ const ProductService = require('../services/ProductService');
 
 const createProduct = async (req, res) => {
     try {
-        const { name, author, publishDate, weight, height, width, length, page, description, price, 
+        const { name, author, publishDate, weight, height, width, length, page, description, price,
             discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier } = req.body;
 
         if (!name || !author || !price) {
@@ -15,19 +15,21 @@ const createProduct = async (req, res) => {
         }
 
         const lastProduct = await Product.findOne().sort({ code: -1 }).select('code');
-        let newCode = 'PD0001'; 
+        let newCode = 'PD0001';
 
-        if (lastProduct && lastProduct.code && /^PD\d{4}$/.test(lastProduct.code)) { 
+        if (lastProduct && lastProduct.code && /^PD\d{4}$/.test(lastProduct.code)) {
             const lastNumber = parseInt(lastProduct.code.slice(2), 10); // slice(2) thay vì slice(1)
             newCode = `PD${String(lastNumber + 1).padStart(4, '0')}`;
         } else {
             newCode = 'PD0001'; // Trường hợp không có sản phẩm nào
         }
-        
+
 
         const imgUrls = req.files.map(file => file.path);
-        const newProduct = { code: newCode, name, author, publishDate, weight, height, width, length, page, description, price, 
-            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier, img: imgUrls };
+        const newProduct = {
+            code: newCode, name, author, publishDate, weight, height, width, length, page, description, price,
+            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier, img: imgUrls
+        };
 
 
         const response = await ProductService.createProduct(newProduct);
@@ -43,19 +45,21 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { name, author, publishDate, weight, height, width, length, page, description, price, 
+        const { name, author, publishDate, weight, height, width, length, page, description, price,
             discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier } = req.body;
 
-        let updatedImgs = req.body.existingImages || []; 
+        let updatedImgs = req.body.existingImages || [];
 
         if (req.files && req.files.length > 0) {
-            updatedImgs = [...updatedImgs, ...req.files.map(file => file.path)]; 
+            updatedImgs = [...updatedImgs, ...req.files.map(file => file.path)];
         }
 
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
-            { name, author, publishDate, weight, height, width, length, page, description, price, 
-                discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier, img: updatedImgs },
+            {
+                name, author, publishDate, weight, height, width, length, page, description, price,
+                discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier, img: updatedImgs
+            },
             { new: true }
         );
 
@@ -102,25 +106,25 @@ const deleteProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-      const { limit, page, sort, filter } = req.query;
-      console.log('API called with:', { limit, page, sort, filter });  // Log các tham số
-      const response = await ProductService.getAllProduct(
-        Number(limit) ,
-        Number(page) || 0,
-        sort ? JSON.parse(sort) : null,
-        filter ? JSON.parse(filter) : null
-      );      
-  
-      return res.status(200).json(response);
+        const { limit, page, sort, filter } = req.query;
+        console.log('API called with:', { limit, page, sort, filter });  // Log các tham số
+        const response = await ProductService.getAllProduct(
+            Number(limit),
+            Number(page) || 0,
+            sort ? JSON.parse(sort) : null,
+            filter ? JSON.parse(filter) : null
+        );
+
+        return res.status(200).json(response);
     } catch (e) {
-      return res.status(500).json({
-        status: 'ERROR',
-        message: 'Error fetching products',
-        error: e.message,
-      });
+        return res.status(500).json({
+            status: 'ERROR',
+            message: 'Error fetching products',
+            error: e.message,
+        });
     }
-  };
-  
+};
+
 
 const getDetailProduct = async (req, res) => {
     try {
@@ -178,7 +182,7 @@ const updateProductRating2 = async (req, res) => {
         const { id } = req.params;
         const { oldRating, newRating } = req.body;
 
-        if (!id || !oldRating|| !newRating) {
+        if (!id || !oldRating || !newRating) {
             return res.status(400).json({ message: 'Thiếu thông tin productId hoặc starRating.' });
         }
 
@@ -219,7 +223,7 @@ const updateView = async (req, res) => {
     try {
         const { id } = req.params;
 
-        if (!id ) {
+        if (!id) {
             return res.status(400).json({ message: 'Thiếu thông tin productId hoặc starRating.' });
         }
 
