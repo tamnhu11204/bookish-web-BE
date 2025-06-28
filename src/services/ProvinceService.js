@@ -1,9 +1,9 @@
 const Province = require('../models/ProvinceModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createProvince = (newProvince) => {
     return new Promise(async (resolve, reject) => {
-        const {name} = newProvince;
+        const { name } = newProvince;
         try {
             const checkProvince = await Province.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createProvince = (newProvince) => {
                     message: 'The Province name is already'
                 })
             }
-            const createdProvince = await Province.create({name});
+            const createdProvince = await Province.create({ name });
             if (createdProvince) {
                 resolve({
                     status: 'OK',
@@ -75,7 +75,7 @@ const deleteProvince = (id) => {
 const getAllProvince = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allProvince=await Province.find()
+            const allProvince = await Province.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -114,4 +114,4 @@ const getDetailProvince = (id) => {
 
 
 
-module.exports = { createProvince, updateProvince, deleteProvince, getAllProvince, getDetailProvince};
+module.exports = { createProvince, updateProvince, deleteProvince, getAllProvince, getDetailProvince };

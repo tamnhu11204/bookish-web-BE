@@ -1,7 +1,7 @@
 const User = require("../models/UserModel");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 // Quên mật khẩu
 const forgotPassword = async (email) => {
@@ -88,8 +88,8 @@ const resetPassword = async (email, newPassword) => {
       throw new Error("Người dùng không tồn tại!");
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    const salt = await bcryptjs.genSalt(10);
+    const hashedPassword = await bcryptjs.hash(newPassword, salt);
 
     user.password = hashedPassword;
     user.userConfirmPassword = hashedPassword;

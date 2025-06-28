@@ -1,11 +1,11 @@
 const FavoriteProduct = require('./../models/FavoriteProductModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createFavoriteProduct = (newFavoriteProduct) => {
     return new Promise(async (resolve, reject) => {
-        const {product, user} = newFavoriteProduct;
+        const { product, user } = newFavoriteProduct;
         try {
-            const createdFavoriteProduct = await FavoriteProduct.create({product, user});
+            const createdFavoriteProduct = await FavoriteProduct.create({ product, user });
             if (createdFavoriteProduct) {
                 resolve({
                     status: 'OK',
@@ -116,4 +116,4 @@ const getDetailFavoriteProduct = (id) => {
 
 
 
-module.exports = { createFavoriteProduct, updateFavoriteProduct, deleteFavoriteProduct, getAllFavoriteProduct, getDetailFavoriteProduct};
+module.exports = { createFavoriteProduct, updateFavoriteProduct, deleteFavoriteProduct, getAllFavoriteProduct, getDetailFavoriteProduct };

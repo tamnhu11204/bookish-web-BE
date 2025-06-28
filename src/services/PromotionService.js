@@ -1,5 +1,5 @@
 const Promotion = require('../models/PromotionModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createPromotion = (newPromotion) => {
     return new Promise(async (resolve, reject) => {
@@ -118,7 +118,7 @@ const updatePromotionUsage = async (id) => {
         }
 
         // Tăng giá trị used
-        promotion.used = promotion.used+1;
+        promotion.used = promotion.used + 1;
 
         // Lưu lại thay đổi
         const updatedPromotion = await promotion.save();

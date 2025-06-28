@@ -1,9 +1,9 @@
 const Unit = require('./../../models/UnitModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createUnit = (newUnit) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note, code} = newUnit;
+        const { name, note, code } = newUnit;
         try {
             const checkUnit = await Unit.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createUnit = (newUnit) => {
                     message: 'Tên đơn vị đã tồn tại! Vui lòng nhập tên khác.'
                 })
             }
-            const createdUnit = await Unit.create({name, note,code});
+            const createdUnit = await Unit.create({ name, note, code });
             if (createdUnit) {
                 resolve({
                     status: 'OK',
@@ -75,7 +75,7 @@ const deleteUnit = (id) => {
 const getAllUnit = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allUnit=await Unit.find()
+            const allUnit = await Unit.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -114,4 +114,4 @@ const getDetailUnit = (id) => {
 
 
 
-module.exports = { createUnit, updateUnit, deleteUnit, getAllUnit, getDetailUnit};
+module.exports = { createUnit, updateUnit, deleteUnit, getAllUnit, getDetailUnit };

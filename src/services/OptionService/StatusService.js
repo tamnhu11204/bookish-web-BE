@@ -1,10 +1,10 @@
 const Status = require('../../models/ActiveModel');
 //const Unit = require('../../models/ActiveModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createStatus = (newStatus) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note} = newStatus;
+        const { name, note } = newStatus;
         try {
             const checkStatus = await Status.findOne({
                 name: name
@@ -15,7 +15,7 @@ const createStatus = (newStatus) => {
                     message: 'Tên trạng thái đã tồn tại! Vui lòng nhập tên khác.'
                 })
             }
-            const createdStatus = await Status.create({name, note});
+            const createdStatus = await Status.create({ name, note });
             if (createdStatus) {
                 resolve({
                     status: 'OK',
@@ -76,7 +76,7 @@ const deleteStatus = (id) => {
 const getAllStatus = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allStatus=await Status.find()
+            const allStatus = await Status.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -115,4 +115,4 @@ const getDetailStatus = (id) => {
 
 
 
-module.exports = { createStatus, updateStatus, deleteStatus, getAllStatus, getDetailStatus};
+module.exports = { createStatus, updateStatus, deleteStatus, getAllStatus, getDetailStatus };
