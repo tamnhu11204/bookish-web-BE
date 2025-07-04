@@ -3,12 +3,11 @@ const Order = require('../models/OrderModel');
 const FavoriteProduct = require('../models/FavoriteProductModel');
 const Product = require('../models/ProductModel');
 
-// Hàm đếm tần suất thể loại từ lịch sử mua hàng và danh sách yêu thích
 const getFavoriteGenre = async (userId) => {
   const genreCount = {};
 
-  // Lấy lịch sử mua hàng
   const orders = await Order.find({ user: userId }).populate('orderItems.product');
+  console.log('Orders found:', orders.length);
   orders.forEach(order => {
     order.orderItems.forEach(item => {
       if (item.product && item.product.genre) {
@@ -18,8 +17,8 @@ const getFavoriteGenre = async (userId) => {
     });
   });
 
-  // Lấy danh sách yêu thích
   const favorites = await FavoriteProduct.find({ user: userId }).populate('product');
+  console.log('Favorites found:', favorites.length);
   favorites.forEach(favorite => {
     if (favorite.product && favorite.product.genre) {
       const genre = favorite.product.genre;
@@ -27,24 +26,23 @@ const getFavoriteGenre = async (userId) => {
     }
   });
 
-  // Trả về thể loại phổ biến nhất
+  console.log('Genre count:', genreCount);
   return Object.keys(genreCount).sort((a, b) => genreCount[b] - genreCount[a])[0] || null;
 };
 
-// Hàm lấy danh sách sách gợi ý
 const getRecommendations = async (userId) => {
   const user = await User.findById(userId);
   if (!user) {
     throw new Error('Không tìm thấy người dùng');
   }
 
-  // Bước 1: Xác định thể loại yêu thích
   const favoriteGenre = await getFavoriteGenre(userId);
+  console.log('Favorite genre:', favoriteGenre);
   if (!favoriteGenre) {
-    return [];
+    console.log('No favorite genre found, returning popular books');
+    return await Product.find().sort({ popularity: -1 }).limit(5); // Fallback: sách phổ biến
   }
 
-  // Bước 2: Lấy danh sách sách đã mua và yêu thích để loại trừ
   const orders = await Order.find({ user: userId }).populate('orderItems.product');
   const favorites = await FavoriteProduct.find({ user: userId }).populate('product');
   const purchasedBookIds = orders
@@ -54,14 +52,14 @@ const getRecommendations = async (userId) => {
     .map(favorite => favorite.product?._id?.toString())
     .filter(id => id);
   const excludeIds = [...new Set([...purchasedBookIds, ...favoriteBookIds])];
+  console.log('Exclude IDs:', excludeIds);
 
-  // Bước 3: Tìm sách cùng thể loại, không nằm trong danh sách đã mua hoặc yêu thích
   const recommendedBooksByGenre = await Product.find({
     genre: favoriteGenre,
     _id: { $nin: excludeIds },
   }).limit(5);
+  console.log('Recommended by genre:', recommendedBooksByGenre.length);
 
-  // Bước 4: Tìm sách từ cùng tác giả
   const favoriteAuthors = [
     ...new Set([
       ...orders.flatMap(order => order.orderItems.map(item => item.product?.author)).filter(Boolean),
@@ -72,8 +70,15 @@ const getRecommendations = async (userId) => {
     author: { $in: favoriteAuthors },
     _id: { $nin: excludeIds },
   }).limit(3);
+  console.log('Recommended by author:', recommendedBooksByAuthor.length);
 
-  return [...recommendedBooksByGenre, ...recommendedBooksByAuthor];
+  const recommendations = [...recommendedBooksByGenre, ...recommendedBooksByAuthor];
+  if (recommendations.length === 0) {
+    console.log('No recommendations found, returning popular books');
+    return await Product.find().sort({ popularity: -1 }).limit(5); // Fallback: sách phổ biến
+  }
+
+  return recommendations;
 };
 
 module.exports = {

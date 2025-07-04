@@ -76,7 +76,7 @@ const getAllFavoriteProduct = ({ user, product }) => {
             }
 
             // Tìm kiếm dựa trên filter
-            const allFavoriteProduct = await FavoriteProduct.find(filter);
+            const allFavoriteProduct = await FavoriteProduct.find(filter).populate('product');
             resolve({
                 status: 'OK',
                 message: 'Success',
