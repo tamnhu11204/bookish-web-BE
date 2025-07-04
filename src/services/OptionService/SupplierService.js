@@ -1,9 +1,9 @@
 const Supplier = require('./../../models/SupplierModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createSupplier = (newSupplier) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note, img, code} = newSupplier;
+        const { name, note, img, code } = newSupplier;
         try {
             const checkSupplier = await Supplier.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createSupplier = (newSupplier) => {
                     message: 'Tên nhà cung cấp đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdSupplier = await Supplier.create({name, note,img,code});
+            const createdSupplier = await Supplier.create({ name, note, img, code });
             if (createdSupplier) {
                 resolve({
                     status: 'OK',
@@ -48,7 +48,7 @@ const updateSupplier = (id, data) => {
                 })
             }
 
-            
+
 
             const updatedSupplier = await Supplier.findByIdAndUpdate(id, data, { new: true })
             resolve({
@@ -86,7 +86,7 @@ const deleteSupplier = (id) => {
 const getAllSupplier = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allSupplier=await Supplier.find()
+            const allSupplier = await Supplier.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -125,4 +125,4 @@ const getDetailSupplier = (id) => {
 
 
 
-module.exports = { createSupplier, updateSupplier, deleteSupplier, getAllSupplier, getDetailSupplier};
+module.exports = { createSupplier, updateSupplier, deleteSupplier, getAllSupplier, getDetailSupplier };

@@ -1,9 +1,9 @@
 const Publisher = require('./../../models/PublisherModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createPublisher = (newPublisher) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note, img, code} = newPublisher;
+        const { name, note, img, code } = newPublisher;
         try {
             const checkPublisher = await Publisher.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createPublisher = (newPublisher) => {
                     message: 'Tên nhà cung cấp đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdPublisher = await Publisher.create({name, note,img, code});
+            const createdPublisher = await Publisher.create({ name, note, img, code });
             if (createdPublisher) {
                 resolve({
                     status: 'OK',
@@ -48,7 +48,7 @@ const updatePublisher = (id, data) => {
                 })
             }
 
-            
+
 
             const updatedPublisher = await Publisher.findByIdAndUpdate(id, data, { new: true })
             resolve({
@@ -86,8 +86,8 @@ const deletePublisher = (id) => {
 const getAllPublisher = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allpublisher=await Publisher.find()
-           
+            const allpublisher = await Publisher.find()
+
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -126,4 +126,4 @@ const getDetailPublisher = (id) => {
 
 
 
-module.exports = { createPublisher, updatePublisher, deletePublisher, getAllPublisher, getDetailPublisher};
+module.exports = { createPublisher, updatePublisher, deletePublisher, getAllPublisher, getDetailPublisher };

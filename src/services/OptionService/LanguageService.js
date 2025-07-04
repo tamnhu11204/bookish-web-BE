@@ -1,9 +1,9 @@
 const Language = require('./../../models/LanguageModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createLanguage = (newLanguage) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note,code} = newLanguage;
+        const { name, note, code } = newLanguage;
         try {
             const checkLanguage = await Language.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createLanguage = (newLanguage) => {
                     message: 'Tên ngôn ngữ đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdLanguage = await Language.create({name, note,code});
+            const createdLanguage = await Language.create({ name, note, code });
             if (createdLanguage) {
                 resolve({
                     status: 'OK',
@@ -75,7 +75,7 @@ const deleteLanguage = (id) => {
 const getAllLanguage = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allLanguage=await Language.find()
+            const allLanguage = await Language.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -114,4 +114,4 @@ const getDetailLanguage = (id) => {
 
 
 
-module.exports = { createLanguage, updateLanguage, deleteLanguage, getAllLanguage, getDetailLanguage};
+module.exports = { createLanguage, updateLanguage, deleteLanguage, getAllLanguage, getDetailLanguage };

@@ -1,9 +1,9 @@
 const OrderActiveList = require('./../models/OrderActiveListModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createOrderActiveList = (newOrderActiveList) => {
     return new Promise(async (resolve, reject) => {
-        const {order, activeList} = newOrderActiveList;
+        const { order, activeList } = newOrderActiveList;
         console.log('newOrderActiveList', newOrderActiveList)
         try {
             const checkOrderActiveList = await OrderActiveList.findOne({
@@ -15,7 +15,7 @@ const createOrderActiveList = (newOrderActiveList) => {
                     message: 'Đơn hàng đã tồn tại! Vui lòng nhập tên khác.'
                 })
             }
-            const createdOrderActiveList = await OrderActiveList.create({order, activeList});
+            const createdOrderActiveList = await OrderActiveList.create({ order, activeList });
             if (createdOrderActiveList) {
                 resolve({
                     status: 'OK',
@@ -101,4 +101,4 @@ const updateOrderActiveList = (orderId, newActive) => {
 
 
 
-module.exports = { updateOrderActiveList, getAllOrderActiveList, createOrderActiveList, getDetailOrderActiveList}
+module.exports = { updateOrderActiveList, getAllOrderActiveList, createOrderActiveList, getDetailOrderActiveList }

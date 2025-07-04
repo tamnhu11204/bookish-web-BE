@@ -1,5 +1,5 @@
 const User = require('../models/UserModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 const { generalAccessToken, generalRefreshToken } = require('./JwtService');
 
 const createUser = (newUser) => {
@@ -15,7 +15,7 @@ const createUser = (newUser) => {
                     message: 'Email đã tồn tại! Vui lòng dùng Email khác.'
                 })
             }
-            const hash = bcrypt.hashSync(password, 10)
+            const hash = bcryptjs.hashSync(password, 10)
             console.log('hash', hash)
             const createdUser = await User.create({
                 email,
@@ -49,7 +49,7 @@ const loginUser = (userLogin) => {
                     message: 'Email không tồn tại!'
                 });
             }
-            const comparePassword = bcrypt.compareSync(password, checkUser.password);
+            const comparePassword = bcryptjs.compareSync(password, checkUser.password);
             if (!comparePassword) {
                 resolve({
                     status: 'ERR',
@@ -206,7 +206,7 @@ const resetPassword = (userId, oldPassword, newPassword) => {
             }
 
             // Kiểm tra mật khẩu cũ
-            const isPasswordMatch = bcrypt.compareSync(oldPassword, user.password);
+            const isPasswordMatch = bcryptjs.compareSync(oldPassword, user.password);
             if (!isPasswordMatch) {
                 resolve({
                     status: 'ERR',
@@ -216,7 +216,7 @@ const resetPassword = (userId, oldPassword, newPassword) => {
             }
 
             // Hash mật khẩu mới
-            const hashedPassword = bcrypt.hashSync(newPassword, 10);
+            const hashedPassword = bcryptjs.hashSync(newPassword, 10);
             user.password = hashedPassword;
 
             // Lưu lại user với mật khẩu mới

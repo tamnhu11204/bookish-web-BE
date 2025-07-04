@@ -1,5 +1,5 @@
 const ShopProfile = require('../models/ShopProfileModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createShopProfile = (newShopProfile) => {
     return new Promise(async (resolve, reject) => {
@@ -89,27 +89,27 @@ const getDetailShopProfile = (id) => {
 
 const updateImage = async (id, img) => {
     try {
-      // Tìm cửa hàng dựa trên shopId và cập nhật trường img
-      const shop = await ShopProfile.findById(id);
-      
-      if (!shop) {
-        throw new Error("Cửa hàng không tồn tại.");
-      }
-  
-      // Cập nhật trường img trong cửa hàng
-      shop.img = img;
-  
-      // Lưu lại thay đổi
-      await shop.save();
-  
-      return true;
-    } catch (error) {
-      console.error("Error in updateImage service: ", error);
-      return false;
-    }
-  };
+        // Tìm cửa hàng dựa trên shopId và cập nhật trường img
+        const shop = await ShopProfile.findById(id);
 
-  const updatePaymentAndFee = (id, data) => {
+        if (!shop) {
+            throw new Error("Cửa hàng không tồn tại.");
+        }
+
+        // Cập nhật trường img trong cửa hàng
+        shop.img = img;
+
+        // Lưu lại thay đổi
+        await shop.save();
+
+        return true;
+    } catch (error) {
+        console.error("Error in updateImage service: ", error);
+        return false;
+    }
+};
+
+const updatePaymentAndFee = (id, data) => {
     return new Promise(async (resolve, reject) => {
         try {
             // Tìm kiếm cửa hàng
@@ -125,10 +125,10 @@ const updateImage = async (id, img) => {
             // Cập nhật các trường được yêu cầu
             const updatedShopProfile = await ShopProfile.findByIdAndUpdate(
                 id,
-                { 
-                    bank: data.bank, 
-                    momo: data.momo, 
-                    deliveryFee: data.deliveryFee 
+                {
+                    bank: data.bank,
+                    momo: data.momo,
+                    deliveryFee: data.deliveryFee
                 },
                 { new: true } // Trả về document mới sau khi cập nhật
             );

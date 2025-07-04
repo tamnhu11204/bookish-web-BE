@@ -1,11 +1,11 @@
 const Feedback = require('./../models/FeedbackModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createFeedback = (newFeedback) => {
     return new Promise(async (resolve, reject) => {
-        const {product, img, content, star, user} = newFeedback;
+        const { product, img, content, star, user } = newFeedback;
         try {
-            const createdFeedback = await Feedback.create({product, img, content, star, user});
+            const createdFeedback = await Feedback.create({ product, img, content, star, user });
             if (createdFeedback) {
                 resolve({
                     status: 'OK',
@@ -116,4 +116,4 @@ const getDetailFeedback = (id) => {
 
 
 
-module.exports = { createFeedback, updateFeedback, deleteFeedback, getAllFeedback, getDetailFeedback};
+module.exports = { createFeedback, updateFeedback, deleteFeedback, getAllFeedback, getDetailFeedback };

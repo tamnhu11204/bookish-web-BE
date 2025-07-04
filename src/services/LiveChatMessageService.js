@@ -2,12 +2,14 @@ const LiveChatMessage = require('../models/LiveChatMessageModel');
 const User = require('../models/UserModel');
 const mongoose = require('mongoose');
 
-const createMessage = async ({ sender, userId, message, isHandled = false }) => {
+const createMessage = async ({ sender, userId, message, isHandled = false, context = {}, platform = "website" }) => {
   const chatMessage = new LiveChatMessage({
     sender,
     message,
     user: userId,
     isHandled,
+    context,
+    platform
   });
   return await chatMessage.save();
 };
@@ -26,11 +28,13 @@ const getAllUsersWithLatestMessage = async () => {
         latestMessage: { $first: '$message' },
         latestTimestamp: { $first: '$timestamp' },
         isHandled: { $first: '$isHandled' },
+        context: { $first: '$context' },
+        platform: { $first: '$platform' }
       },
     },
   ]);
 
-  console.log('Latest Messages:', latestMessages);  // Log để kiểm tra dữ liệu trả về
+  console.log('Latest Messages:', latestMessages);
 
   const populatedUsers = await Promise.all(
     latestMessages.map(async (item) => {
@@ -49,6 +53,8 @@ const getAllUsersWithLatestMessage = async () => {
           content: item.latestMessage,
           timestamp: item.latestTimestamp,
           isHandled: item.isHandled,
+          context: item.context,
+          platform: item.platform
         },
       };
     })
@@ -56,7 +62,6 @@ const getAllUsersWithLatestMessage = async () => {
 
   return { users: populatedUsers };
 };
-
 
 const markHandled = async (messageId) => {
   return await LiveChatMessage.findByIdAndUpdate(
@@ -66,12 +71,14 @@ const markHandled = async (messageId) => {
   );
 };
 
-const requestSupport = async (userId, message = 'Yêu cầu hỗ trợ từ người dùng') => {
+const requestSupport = async (userId, message = 'Yêu cầu hỗ trợ từ người dùng', context = {}, platform = "website") => {
   const chatMessage = new LiveChatMessage({
     sender: 'user',
     user: userId,
     message,
     isHandled: false,
+    context,
+    platform
   });
   return await chatMessage.save();
 };

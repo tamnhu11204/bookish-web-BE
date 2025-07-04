@@ -1,5 +1,5 @@
 const Category = require('./../models/CategoryModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createCategory = (newCategory) => {
     return new Promise(async (resolve, reject) => {
@@ -76,7 +76,7 @@ const deleteCategory = (id) => {
 const getAllCategory = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allCategory=await Category.find()
+            const allCategory = await Category.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -138,4 +138,4 @@ const getCategoryTree = () => {
 
 
 
-module.exports = { createCategory, updateCategory, deleteCategory, getAllCategory, getDetailCategory, getCategoryTree};
+module.exports = { createCategory, updateCategory, deleteCategory, getAllCategory, getDetailCategory, getCategoryTree };

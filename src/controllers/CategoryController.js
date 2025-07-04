@@ -9,7 +9,7 @@ const createCategory = async (req, res) => {
             return res.status(400).json({ status: 'ERR', message: 'Thiếu tên danh mục!' });
         }
 
-        if (!req.file) {
+        if (!req.file && !req.body.existingImg) {
             return res.status(400).json({ status: 'ERR', message: 'Thiếu ảnh danh mục!' });
         }
 
@@ -20,11 +20,13 @@ const createCategory = async (req, res) => {
         }
 
         // Kiểm tra parent có hợp lệ không (nếu có)
-        if (parent) {
+        let parentId = null;
+        if (parent && parent !== '' && parent !== 'null' && parent !== 'Không có') {
             const parentCategory = await Category.findById(parent);
             if (!parentCategory) {
                 return res.status(400).json({ status: 'ERR', message: 'Danh mục cha không tồn tại!' });
             }
+            parentId = parent;
         }
 
         // Lấy mã danh mục lớn nhất
@@ -35,12 +37,20 @@ const createCategory = async (req, res) => {
             newCode = `C${String(lastNumber + 1).padStart(4, '0')}`;
         }
 
-        const img = req.file.path;
-        const newCategory = { code: newCode, name, note, img, parent, slug };
+        const img = req.file ? req.file.path : req.body.existingImg;
+        const newCategory = {
+            code: newCode,
+            name,
+            note,
+            img,
+            parent: parentId, // Use parentId (null or valid ObjectId)
+            slug,
+        };
 
         const response = await CategoryService.createCategory(newCategory);
         return res.status(200).json(response);
     } catch (e) {
+        console.error("Error in createCategory:", e.message);
         return res.status(500).json({ message: e.message });
     }
 };
@@ -63,16 +73,24 @@ const updateCategory = async (req, res) => {
         console.log("Body:", req.body);
         console.log("File:", req.file);
 
-        const { name, note, slug , parent} = req.body;
-        let updatedImg = req.body.img; 
+        const { name, note, slug, parent } = req.body;
+        let updatedImg = req.body.existingImg;
 
         if (req.file) {
-            updatedImg = req.file.path; 
+            updatedImg = req.file.path;
+        }
+
+        // Kiểm tra parent có hợp lệ không (nếu có)
+        if (parent) {
+            const parentCategory = await Category.findById(parent);
+            if (!parentCategory) {
+                return res.status(400).json({ status: 'ERR', message: 'Danh mục cha không tồn tại!' });
+            }
         }
 
         const updatedCategory = await Category.findByIdAndUpdate(
             req.params.id,
-            { name, note, slug, img: updatedImg , parent},
+            { name, note, slug, img: updatedImg, parent: parent || null }, // Convert empty string to null
             { new: true }
         );
 
@@ -93,8 +111,8 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
     try {
-        const CategoryID=req.params.id
-        if (!CategoryID){
+        const CategoryID = req.params.id
+        if (!CategoryID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The CategoryID is required'
@@ -123,8 +141,8 @@ const getAllCategory = async (req, res) => {
 
 const getDetailCategory = async (req, res) => {
     try {
-        const CategoryID=req.params.id
-        if (!CategoryID){
+        const CategoryID = req.params.id
+        if (!CategoryID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The CategoryID is required'
@@ -140,4 +158,4 @@ const getDetailCategory = async (req, res) => {
 };
 
 
-module.exports = { createCategory, updateCategory, deleteCategory, getAllCategory, getDetailCategory, getCategoryTree};
+module.exports = { createCategory, updateCategory, deleteCategory, getAllCategory, getDetailCategory, getCategoryTree };

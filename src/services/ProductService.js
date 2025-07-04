@@ -3,7 +3,7 @@ const Product = require('../models/ProductModel');
 // Tạo sản phẩm
 const createProduct = async (newProduct) => {
     try {
-        const {code,
+        const { code,
             name, author, publishDate, weight, height, width, length, page, description, price,
             discount, stock, img, star, favorite, view, publisher, language, format, unit, category, supplier
         } = newProduct;
@@ -26,7 +26,7 @@ const createProduct = async (newProduct) => {
             data: createdProduct,
         };
     } catch (e) {
-        console.error('Error creating product:', e); 
+        console.error('Error creating product:', e);
         throw { status: 'ERROR', message: 'Error creating product', error: e.message };
     }
 };
@@ -51,7 +51,7 @@ const updateProduct = async (id, data) => {
             data: product,
         };
     } catch (e) {
-        console.error('Error updating product:', e);  
+        console.error('Error updating product:', e);
         throw { status: 'ERROR', message: 'Error updating product', error: e.message };
     }
 };
@@ -71,7 +71,7 @@ const deleteProduct = async (id) => {
             message: 'Product deleted successfully',
         };
     } catch (e) {
-        console.error('Error deleting product:', e);  
+        console.error('Error deleting product:', e);
         throw { status: 'ERROR', message: 'Error deleting product', error: e.message };
     }
 };
@@ -82,7 +82,7 @@ const getAllProduct = async (limit = 10, page = 0, sort = null, filter = null) =
         const query = {};
         if (filter) {
             const [field, value] = filter;
-            query[field] = { $regex: value, $options: 'i' }; 
+            query[field] = { $regex: value, $options: 'i' };
         }
 
         const sortOption = sort ? { [sort[0]]: sort[1] } : {};
@@ -98,11 +98,11 @@ const getAllProduct = async (limit = 10, page = 0, sort = null, filter = null) =
             message: 'Products retrieved successfully',
             data: products,
             total: totalProduct,
-            pageCurrent: page+1,
+            pageCurrent: page + 1,
             totalPage: Math.ceil(totalProduct / limit),
         };
     } catch (e) {
-        console.error('Error fetching products:', e);  
+        console.error('Error fetching products:', e);
         throw { status: 'ERROR', message: 'Error fetching products', error: e.message };
     }
 };
@@ -163,16 +163,16 @@ const updateProductRating2 = async (productId, newRating, oldRating) => {
 
     const { star, feedbackCount } = product;
 
-    const totalStars = star * feedbackCount; 
-    const updatedTotalStars = totalStars - oldRating + newRating; 
-    product.star = updatedTotalStars / feedbackCount; 
+    const totalStars = star * feedbackCount;
+    const updatedTotalStars = totalStars - oldRating + newRating;
+    product.star = updatedTotalStars / feedbackCount;
 
     await product.save();
 
     return product;
 };
 
-const deleteRating = async (productId, rating ) => {
+const deleteRating = async (productId, rating) => {
     if (rating < 1 || rating > 5) {
         throw new Error('Số sao mới phải nằm trong khoảng từ 1 đến 5.');
     }
@@ -182,23 +182,23 @@ const deleteRating = async (productId, rating ) => {
     }
 
     const { star, feedbackCount } = product;
-    product.feedbackCount=feedbackCount-1
+    product.feedbackCount = feedbackCount - 1
     const totalStars = star * product.feedbackCount;
-    const updatedTotalStars = totalStars - rating ; 
-    product.star = updatedTotalStars / product.feedbackCount; 
+    const updatedTotalStars = totalStars - rating;
+    product.star = updatedTotalStars / product.feedbackCount;
 
     await product.save();
 
     return product;
 };
 
-const updateView = async (productId ) => {
+const updateView = async (productId) => {
     const product = await Product.findById(productId);
     if (!product) {
         throw new Error('Sản phẩm không tồn tại.');
     }
 
-    product.view=product.view+1
+    product.view = product.view + 1
     await product.save();
 
     return product;

@@ -1,9 +1,9 @@
 const Active = require('./../../models/ActiveModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createActive = (newActive) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note} = newActive;
+        const { name, note } = newActive;
         try {
             const checkActive = await Active.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createActive = (newActive) => {
                     message: 'Tên ngôn ngữ đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdActive = await Active.create({name, note});
+            const createdActive = await Active.create({ name, note });
             if (createdActive) {
                 resolve({
                     status: 'OK',
@@ -75,7 +75,7 @@ const deleteActive = (id) => {
 const getAllActive = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allActive=await Active.find()
+            const allActive = await Active.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -114,4 +114,4 @@ const getDetailActive = (id) => {
 
 
 
-module.exports = { createActive, updateActive, deleteActive, getAllActive, getDetailActive};
+module.exports = { createActive, updateActive, deleteActive, getAllActive, getDetailActive };

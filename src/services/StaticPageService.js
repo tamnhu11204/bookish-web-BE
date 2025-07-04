@@ -1,9 +1,9 @@
 const StaticPage = require('../models/StaticPageModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createStaticPage = (newStaticPage) => {
     return new Promise(async (resolve, reject) => {
-        const {name, content} = newStaticPage;
+        const { name, content } = newStaticPage;
         try {
             const checkStaticPage = await StaticPage.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createStaticPage = (newStaticPage) => {
                     message: 'Tên đơn vị đã tồn tại! Vui lòng nhập tên khác.'
                 })
             }
-            const createdStaticPage = await StaticPage.create({name, content});
+            const createdStaticPage = await StaticPage.create({ name, content });
             if (createdStaticPage) {
                 resolve({
                     status: 'OK',
@@ -75,7 +75,7 @@ const deleteStaticPage = (id) => {
 const getAllStaticPage = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allStaticPage=await StaticPage.find()
+            const allStaticPage = await StaticPage.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -114,4 +114,4 @@ const getDetailStaticPage = (id) => {
 
 
 
-module.exports = { createStaticPage, updateStaticPage, deleteStaticPage, getAllStaticPage, getDetailStaticPage};
+module.exports = { createStaticPage, updateStaticPage, deleteStaticPage, getAllStaticPage, getDetailStaticPage };

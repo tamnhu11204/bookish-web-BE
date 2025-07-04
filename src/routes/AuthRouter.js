@@ -7,8 +7,8 @@ router.post("/forgot-password", authController.forgotPassword);
 router.post("/verify-otp", authController.verifyOTP);
 router.post("/reset-password", authController.resetPassword);
 
-// Route đăng nhập bằng Google/Facebook
-router.post("/login/google", authController.loginWithGoogle);
-router.post("/login/facebook", authController.loginWithFacebook);
+// // Route đăng nhập bằng Google/Facebook
+// router.post("/login/google", authController.loginWithGoogle);
+// router.post("/login/facebook", authController.loginWithFacebook);
 
 module.exports = router;

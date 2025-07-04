@@ -1,9 +1,9 @@
 const Format = require('./../../models/FormatModel');
-const bcrypt = require("bcrypt");
+const bcryptjs = require("bcryptjs");
 
 const createFormat = (newFormat) => {
     return new Promise(async (resolve, reject) => {
-        const {name, note,code} = newFormat;
+        const { name, note, code } = newFormat;
         try {
             const checkFormat = await Format.findOne({
                 name: name
@@ -14,7 +14,7 @@ const createFormat = (newFormat) => {
                     message: 'Tên hình thức đã tồn tại! Vui lòng chọn tên khác.'
                 })
             }
-            const createdFormat = await Format.create({name, note,code});
+            const createdFormat = await Format.create({ name, note, code });
             if (createdFormat) {
                 resolve({
                     status: 'OK',
@@ -75,7 +75,7 @@ const deleteFormat = (id) => {
 const getAllFormat = () => {
     return new Promise(async (resolve, reject) => {
         try {
-            const allFormat=await Format.find()
+            const allFormat = await Format.find()
             resolve({
                 status: 'OK',
                 message: 'Success',
@@ -114,4 +114,4 @@ const getDetailFormat = (id) => {
 
 
 
-module.exports = { createFormat, updateFormat, deleteFormat, getAllFormat, getDetailFormat};
+module.exports = { createFormat, updateFormat, deleteFormat, getAllFormat, getDetailFormat };

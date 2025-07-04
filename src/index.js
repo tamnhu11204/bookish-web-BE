@@ -12,21 +12,17 @@ const http = require('http');
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001;
-
-// Tạo server HTTP để tích hợp Socket.IO
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: ['http://localhost:3000', 'http://localhost:8000'],
+        origin: [
+            'http://localhost:3000',
+            'http://localhost:8000',
+            process.env.FRONTEND_URL || 'https://bookish-web-frontend.onrender.com',
+            process.env.CHATBOT_URL || 'https://chatbot-backend.onrender.com'
+        ],
         credentials: true,
     },
-});
-
-// Middleware Socket.IO
-io.on('connection', (socket) => {
-    console.log('Client connected:', socket.id);
-    socket.on('disconnect', () => console.log('Client disconnected:', socket.id));
 });
 
 app.use((req, res, next) => {
@@ -34,10 +30,14 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware
 app.use(
     cors({
-        origin: ['http://localhost:3000', 'http://localhost:8000'],
+        origin: [
+            'http://localhost:3000',
+            'http://localhost:8000',
+            process.env.FRONTEND_URL || 'https://bookish-web-frontend.onrender.com',
+            process.env.CHATBOT_URL || 'https://chatbot-backend.onrender.com'
+        ],
         credentials: true,
     })
 );
@@ -46,24 +46,17 @@ app.use(cookieParser());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Routes
 app.use('/api/auth', authRouter);
 app.get('/', (req, res) => {
     res.send('Hello world');
 });
 routes(app);
 
-// Kết nối MongoDB
 mongoose
-    .connect(process.env.MONGO_DB)
-    .then(() => {
-        console.log('Connect Db success!');
-    })
-    .catch((err) => {
-        console.log('Connect Db error:', err);
-    });
+    .connect(process.env.MONGO_DB || 'mongodb://localhost:27017/bookish_db')
+    .then(() => console.log('Connect Db success!'))
+    .catch((err) => console.log('Connect Db error:', err));
 
-// Chạy server
-server.listen(port, () => {
-    console.log('Server is running on port:', port);
+server.listen(process.env.PORT || 3001, () => {
+    console.log('Server is running on port:', process.env.PORT || 3001);
 });
