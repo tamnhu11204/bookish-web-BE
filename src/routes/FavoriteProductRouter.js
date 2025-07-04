@@ -6,7 +6,7 @@ router.post('/create', favoriteProductController.createFavoriteProduct)
 router.put('/update/:id', favoriteProductController.updateFavoriteProduct)
 router.get('/get-detail/:id',favoriteProductController.getDetailFavoriteProduct)
 router.delete('/delete/:id',favoriteProductController.deleteFavoriteProduct)
-router.get('/get-all/:id',favoriteProductController.getAllFavoriteProduct)
+router.get('/get-all',favoriteProductController.getAllFavoriteProduct)
 
 
 module.exports=router

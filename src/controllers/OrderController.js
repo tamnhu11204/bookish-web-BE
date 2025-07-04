@@ -88,22 +88,32 @@ const getDetailOrder = async (req, res) => {
 const updateActiveNow = async (req, res) => {
     const { id } = req.params;
     const data = req.body;
-  
-    console.log('Received activeNow in controller:', data);  // Log dữ liệu nhận được từ frontend
-  
+
+    console.log('Received activeNow in controller:', data); // Log dữ liệu nhận được từ frontend
+
     try {
-      // Gọi service và kiểm tra xem có nhận được dữ liệu không
-      const updatedOrder = await OrderService.updateActiveNow(id, data);
-      return res.status(200).json({
-        message: 'Order updated successfully',
-        order: updatedOrder,
-      });
+        // Gọi service
+        const response = await OrderService.updateActiveNow(id, data);
+
+        if (response.status === 'OK') {
+            return res.status(200).json({
+                message: response.message,
+                order: response.data,
+                emailSent: response.emailSent,
+                emailError: response.emailError,
+            });
+        } else {
+            return res.status(400).json({
+                message: response.message,
+            });
+        }
     } catch (error) {
-      return res.status(500).json({
-        message: error.message || 'Something went wrong while updating the order.',
-      });
+        return res.status(500).json({
+            message: error.message || 'Something went wrong while updating the order.',
+        });
     }
-  };
+};
+
   
   const updateIsCancel = async (req, res) => {
     const { id } = req.params;  // Lấy orderId từ URL
