@@ -1,5 +1,8 @@
 const Order = require("../models/OrderModel");
 const Product = require("../models/ProductModel");
+const nodemailer = require("nodemailer");
+const crypto = require("crypto");
+const bcryptjs = require("bcryptjs");
 
 // Tạo sản phẩm
 const createOrder = async (newOrder) => {
@@ -122,26 +125,83 @@ const getDetailOrder = (id) => {
 
 const updateActiveNow = async (orderId, data) => {
     try {
-        const order = await Order.findById(orderId);
+        // Tìm order và populate user để lấy email
+        const order = await Order.findById(orderId).populate('user');
+        const testEmail = 'kimnganvo560@gmail.com';
 
         if (!order) {
             throw new Error('Order not found');
         }
 
-        console.log('Received activeNow:', data);
+        console.log('Received data:', data);
 
-        const activeNowValue = Object.keys(data)[0];
-
+        // Xử lý data: lấy active từ payload
+        const { active: activeNowValue, date } = data;
         if (!activeNowValue) {
-            throw new Error('Invalid data format');
+            throw new Error('Invalid data format: active is required');
         }
-        order.activeNow = activeNowValue;
 
+        // Cập nhật trạng thái và ngày
+        order.activeNow = activeNowValue;
+        if (date) {
+            order.date = date; // Cập nhật date nếu có
+        }
         await order.save();
 
-        return order;
+        // Kiểm tra email từ user
+        if (!order.user || !order.user.email) {
+            throw new Error('Email not found for this order');
+        }
+
+        // Cấu hình transporter cho Brevo SMTP
+        const transporter = nodemailer.createTransport({
+            host: "smtp-relay.brevo.com",
+            port: 2525,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+            tls: { rejectUnauthorized: false },
+        });
+
+        // Gửi email
+        const mailOptions = {
+           from: `"Bookish xin chào" <${process.env.EMAIL_FROM}>`,
+            to: order.user.email, // Lấy email từ user
+            subject: `Cập nhật trạng thái đơn hàng #${orderId}`,
+            text: `Kính gửi khách hàng,\n\nTrạng thái đơn hàng #${orderId} của bạn đã được cập nhật thành: ${activeNowValue}.\n\nTrân trọng,\nĐội ngũ hỗ trợ`,
+            html: `<p>Kính gửi khách hàng,</p><p>Trạng thái đơn hàng #${orderId} của bạn đã được cập nhật thành: <strong>${activeNowValue}</strong>.</p><p>Trân trọng,<br>Đội ngũ hỗ trợ</p>`,
+        };
+
+        let emailSent = false;
+        let emailError = null;
+        try {
+            await transporter.sendMail(mailOptions);
+            emailSent = true;
+            console.log(`Email sent successfully to ${order.user.email} for order #${orderId}`);
+        } catch (emailError) {
+            emailError = emailError.message;
+            console.error('Error sending email:', emailError);
+        }
+
+        // Trả về response
+        const response = {
+            status: 'OK',
+            message: 'Order updated successfully',
+            data: order,
+            emailSent: emailSent,
+            emailError: emailError,
+        };
+
+        console.log('Update response:', response);
+        return response;
     } catch (error) {
-        throw new Error('Error updating activeNow: ' + error.message);
+        console.error('Error updating activeNow:', error);
+        return {
+            status: 'ERR',
+            message: 'Error updating activeNow: ' + error.message,
+        };
     }
 };
 

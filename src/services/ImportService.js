@@ -50,6 +50,12 @@ const createImport = async (newImport) => {
             }
 
             // Tạo bản ghi nhập hàng mới
+            // Nếu không có code, tạo mã tự động (ví dụ: mã theo thời gian)
+if (!newImport.code) {
+    const timestamp = Date.now();
+    newImport.code = `IMP${timestamp}`; // Ví dụ: IMP1720094391234
+}
+
             const createdImport = await Import.create([newImport], { session });
 
             // Hoàn tất transaction
