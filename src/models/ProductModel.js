@@ -3,9 +3,13 @@ const mongoose = require('mongoose')
 
 const productSchema = new mongoose.Schema(
     {
-        code: {type: String, required: true, unique: true},
+        code: { type: String, required: true, unique: true },
         name: { type: String, required: true, unique: true }, // Tên sản phẩm bắt buộc và duy nhất
-        author: { type: String, required: true }, // Tác giả bắt buộc
+        author: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Author',
+            required: true
+        },
         publishDate: { type: Date }, // Ngày xuất bản không bắt buộc
         weight: { type: Number, default: 0 }, // Trọng lượng, thêm giá trị mặc định
         height: { type: Number, default: 0 },
@@ -20,8 +24,8 @@ const productSchema = new mongoose.Schema(
         star: { type: Number, default: 0 }, // Số sao
         favorite: { type: Number, default: 0 }, // Số yêu thích
         view: { type: Number, default: 0 }, // Lượt xem
-        sold: {type: Number, default: 0},
-        feedbackCount: {type: Number, default: 0},
+        sold: { type: Number, default: 0 },
+        feedbackCount: { type: Number, default: 0 },
 
         // Định nghĩa các khóa ngoại
         publisher: {
@@ -49,7 +53,7 @@ const productSchema = new mongoose.Schema(
         supplier: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Supplier',
-            required: true 
+            required: true
         }
     },
     {

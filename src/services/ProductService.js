@@ -76,22 +76,40 @@ const deleteProduct = async (id) => {
     }
 };
 
-// Lấy tất cả sản phẩm với phân trang và sắp xếp
-const getAllProduct = async (limit = 10, page = 0, sort = null, filter = null) => {
+const getAllProduct = async (limit = 10, page = 0, sort, filter) => {
     try {
         const query = {};
-        if (filter) {
+
+        // Logic lọc sản phẩm được cải tiến
+        if (filter && Array.isArray(filter) && filter.length === 2) {
             const [field, value] = filter;
-            query[field] = { $regex: value, $options: 'i' };
+
+            // NẾU LỌC THEO 'author' HOẶC 'category', DÙNG SO SÁNH BẰNG
+            if (field === 'author' || field === 'category') {
+                query[field] = value;
+            } else {
+                // Nếu lọc theo các trường văn bản (như 'name'), mới dùng $regex
+                query[field] = { $regex: value, $options: 'i' };
+            }
         }
 
-        const sortOption = sort ? { [sort[0]]: sort[1] } : {};
+        // Logic sắp xếp
+        let sortOption = {};
+        if (sort) {
+            const sortArray = typeof sort === 'string' ? JSON.parse(sort) : sort;
+            if (Array.isArray(sortArray) && sortArray.length === 2) {
+                sortOption[sortArray[0]] = sortArray[1];
+            }
+        }
 
+        // ... phần còn lại của hàm giữ nguyên ...
         const totalProduct = await Product.countDocuments(query);
         const products = await Product.find(query)
             .sort(sortOption)
             .skip(page * limit)
-            .limit(limit);
+            .limit(limit)
+            .populate('author')
+            .populate('category');
 
         return {
             status: 'OK',
@@ -102,8 +120,8 @@ const getAllProduct = async (limit = 10, page = 0, sort = null, filter = null) =
             totalPage: Math.ceil(totalProduct / limit),
         };
     } catch (e) {
-        console.error('Error fetching products:', e);
-        throw { status: 'ERROR', message: 'Error fetching products', error: e.message };
+        console.error('SERVICE ERROR - getAllProduct:', e);
+        throw new Error(e.message);
     }
 };
 

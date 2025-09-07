@@ -2,18 +2,23 @@ const FeedbackService = require('../services/FeedbackService');
 
 const createFeedback = async (req, res) => {
     try {
-        const {product, img, content, star, user} = req.body;
-    
+        const { product, content, star, user } = req.body;
+
 
         // Kiểm tra trường nào bị thiếu
-        if (!star||!user||!product) {
+        if (!star || !user || !product) {
             resolve({
                 status: 'ERR',
                 message: 'Vui lòng điền đầy đủ thông tin!'
             })
         }
 
-        const response = await FeedbackService.createFeedback(req.body);
+        const newFeedback = {
+            product, content, star, user,
+            img: req.file.path,
+        };
+
+        const response = await FeedbackService.createFeedback(newFeedback);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({
@@ -24,9 +29,13 @@ const createFeedback = async (req, res) => {
 
 const updateFeedback = async (req, res) => {
     try {
-        const FeedbackID=req.params.id
-        const data=req.body
-        if (!FeedbackID){
+        const FeedbackID = req.params.id
+        const data = req.body
+
+        if (req.file) {
+            data.img = req.file.path;
+        }
+        if (!FeedbackID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The FeedbackID is required'
@@ -44,8 +53,8 @@ const updateFeedback = async (req, res) => {
 
 const deleteFeedback = async (req, res) => {
     try {
-        const FeedbackID=req.params.id
-        if (!FeedbackID){
+        const FeedbackID = req.params.id
+        if (!FeedbackID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The FeedbackID is required'
@@ -79,8 +88,8 @@ const getAllFeedback = async (req, res) => {
 
 const getDetailFeedback = async (req, res) => {
     try {
-        const FeedbackID=req.params.id
-        if (!FeedbackID){
+        const FeedbackID = req.params.id
+        if (!FeedbackID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The FeedbackID is required'
@@ -96,4 +105,4 @@ const getDetailFeedback = async (req, res) => {
 };
 
 
-module.exports = { createFeedback, updateFeedback, deleteFeedback, getAllFeedback, getDetailFeedback};
+module.exports = { createFeedback, updateFeedback, deleteFeedback, getAllFeedback, getDetailFeedback };

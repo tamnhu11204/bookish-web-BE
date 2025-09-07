@@ -107,16 +107,17 @@ const deleteProduct = async (req, res) => {
 const getAllProduct = async (req, res) => {
     try {
         const { limit, page, sort, filter } = req.query;
-        console.log('API called with:', { limit, page, sort, filter });  // Log các tham số
+
         const response = await ProductService.getAllProduct(
-            Number(limit),
+            Number(limit) || 10,
             Number(page) || 0,
-            sort ? JSON.parse(sort) : null,
-            filter ? JSON.parse(filter) : null
+            sort,
+            filter // Truyền thẳng `filter` vào, không parse
         );
 
         return res.status(200).json(response);
     } catch (e) {
+        console.error('CONTROLLER ERROR:', e);
         return res.status(500).json({
             status: 'ERROR',
             message: 'Error fetching products',
@@ -157,16 +158,13 @@ const getDetailProduct = async (req, res) => {
 const updateProductRating = async (req, res) => {
     try {
         const { id } = req.params;
-        const { starRating } = req.body;
+        const { star } = req.body;
 
-        console.log('jhvjbj', id, starRating);
-
-        if (!id || !starRating) {
-            return res.status(400).json({ message: 'Thiếu thông tin productId hoặc starRating.' });
+        if (!id || star === undefined) {
+            return res.status(400).json({ message: 'Thiếu thông tin productId hoặc star.' });
         }
 
-        // Gọi service để xử lý logic
-        const updatedProduct = await ProductService.updateProductRating(id, parseFloat(starRating));
+        const updatedProduct = await ProductService.updateProductRating(id, parseFloat(star));
 
         res.status(200).json({
             message: 'Cập nhật số sao thành công.',
@@ -186,7 +184,6 @@ const updateProductRating2 = async (req, res) => {
             return res.status(400).json({ message: 'Thiếu thông tin productId hoặc starRating.' });
         }
 
-        // Gọi service để xử lý logic
         const updatedProduct = await ProductService.updateProductRating2(id, parseFloat(newRating, oldRating));
 
         res.status(200).json({

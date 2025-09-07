@@ -20,8 +20,9 @@ const FavoriteProductRouter = require('./FavoriteProductRouter')
 const StaticPageRouter = require('./StaticPageRouter')
 const ImportRouter = require('./ImportRouter')
 const recommendationRoutes = require('./RecommendationRouter');
-
-const LiveChatMessageRouter = require('./LiveChatMessageRouter')
+const AuthorRouter = require('./AuthorRouter');
+const LiveChatMessageRouter = require('./LiveChatMessageRouter');
+const HomepageConfigRouter = require('./HomepageConfigRouter')
 
 const routes = (app) => {
     app.use('/api/user', UserRouter)
@@ -46,7 +47,9 @@ const routes = (app) => {
     app.use('/api/static-page', StaticPageRouter)
     app.use('/api/imports', ImportRouter)
     app.use('/api/recommendation', recommendationRoutes);
-    app.use('/api/chat', LiveChatMessageRouter)
+    app.use('/api/chat', LiveChatMessageRouter);
+    app.use('/api/author', AuthorRouter);
+    app.use('/api/homepage', HomepageConfigRouter)
 }
 
 module.exports = routes;
