@@ -17,6 +17,7 @@ const updateConfig = async (req, res) => {
         if (files) {
             if (files.bannerImage1) data.bannerImage1 = files.bannerImage1[0].path;
             if (files.bannerImage2) data.bannerImage2 = files.bannerImage2[0].path;
+            if (files.bannerPromotion) data.bannerPromotion = files.bannerPromotion[0].path;
         }
 
         const response = await HomePageConfigService.updateConfig(data);

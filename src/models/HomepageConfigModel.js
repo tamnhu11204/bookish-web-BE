@@ -5,6 +5,7 @@ const homePageConfigSchema = new mongoose.Schema({
 
     bannerImage1: { type: String },
     bannerImage2: { type: String },
+    bannerPromotion: { type: String },
     bannerTextLine1: { type: String, default: 'Bookish' },
     bannerTextLine2: { type: String, default: 'Mở sách - Mở thế giới' },
 

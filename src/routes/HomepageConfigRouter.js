@@ -11,7 +11,8 @@ router.put(
     authMiddleWare,
     uploadCloudinary.fields([
         { name: 'bannerImage1', maxCount: 1 },
-        { name: 'bannerImage2', maxCount: 1 }
+        { name: 'bannerImage2', maxCount: 1 },
+        { name: 'bannerPromotion', maxCount: 1 }
     ]),
     HomePageConfigController.updateConfig
 );
