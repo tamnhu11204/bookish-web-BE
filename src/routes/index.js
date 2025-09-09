@@ -22,7 +22,8 @@ const ImportRouter = require('./ImportRouter')
 const recommendationRoutes = require('./RecommendationRouter');
 const AuthorRouter = require('./AuthorRouter');
 const LiveChatMessageRouter = require('./LiveChatMessageRouter');
-const HomepageConfigRouter = require('./HomepageConfigRouter')
+const HomepageConfigRouter = require('./HomepageConfigRouter');
+const AboutUsRouter = require('./AboutUsRouter')
 
 const routes = (app) => {
     app.use('/api/user', UserRouter)
@@ -49,7 +50,8 @@ const routes = (app) => {
     app.use('/api/recommendation', recommendationRoutes);
     app.use('/api/chat', LiveChatMessageRouter);
     app.use('/api/author', AuthorRouter);
-    app.use('/api/homepage', HomepageConfigRouter)
+    app.use('/api/homepage', HomepageConfigRouter);
+    app.use('/api/about-us', AboutUsRouter)
 }
 
 module.exports = routes;
