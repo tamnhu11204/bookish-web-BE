@@ -13,7 +13,7 @@ router.get("/get-detail/:id", newsController.getDetailNews);
 router.get("/get-all", newsController.getAllNews);
 
 // Cập nhật tin tức
-router.put("/update/:id", newsController.updateNews);
+router.put("/update/:id", uploadCloudinary.single('image'), newsController.updateNews);
 
 // Xóa tin tức
 router.delete("/delete/:id", newsController.deleteNews);
