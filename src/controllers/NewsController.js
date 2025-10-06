@@ -67,19 +67,29 @@ const updateNews = async (req, res) => {
 
     const { title, segments, author, category, source, publishDate, summary, tags, status, existingImage } = req.body;
 
-    if (!title?.trim() || !segments) {
-      return res.status(400).json({ status: 'ERR', message: 'Thiếu tiêu đề hoặc nội dung!' });
+    // Kiểm tra title
+    if (!title?.trim()) {
+      return res.status(400).json({ status: "ERR", message: "Thiếu tiêu đề bài viết!" });
     }
 
     // Parse segments từ JSON string
     let parsedSegments;
     try {
-      parsedSegments = JSON.parse(segments);
-      if (!Array.isArray(parsedSegments) || parsedSegments.some(segment => !segment.content?.trim())) {
-        return res.status(400).json({ status: 'ERR', message: 'Nội dung các đoạn không hợp lệ!' });
+      parsedSegments = segments ? JSON.parse(segments) : [];
+      if (!Array.isArray(parsedSegments) || parsedSegments.length === 0 || parsedSegments.some(segment => !segment.content?.trim())) {
+        return res.status(400).json({ status: "ERR", message: "Nội dung các đoạn không hợp lệ!" });
+      }
+      // Kiểm tra segment.title nếu bắt buộc
+      if (parsedSegments.some(segment => !segment.title?.trim())) {
+        return res.status(400).json({ status: "ERR", message: "Thiếu tiêu đề trong một số đoạn!" });
       }
     } catch (e) {
-      return res.status(400).json({ status: 'ERR', message: 'Dữ liệu segments không hợp lệ!' });
+      return res.status(400).json({ status: "ERR", message: "Dữ liệu segments không hợp lệ!" });
+    }
+
+    // Kiểm tra publishDate
+    if (!publishDate) {
+      return res.status(400).json({ status: "ERR", message: "Thiếu ngày đăng!" });
     }
 
     // Sử dụng ảnh mới nếu có, nếu không giữ ảnh cũ
@@ -90,32 +100,32 @@ const updateNews = async (req, res) => {
       {
         title,
         segments: parsedSegments,
-        author,
+        author: author || "Admin",
         image,
         category,
         source,
         summary,
         tags: tags ? JSON.parse(tags) : undefined,
-        publishDate: publishDate ? new Date(publishDate) : undefined,
+        publishedAt: publishDate ? new Date(publishDate) : new Date(),
         status,
       },
       { new: true }
     );
 
     if (!updatedNews) {
-      return res.status(404).json({ status: 'ERR', message: 'Không tìm thấy tin tức!' });
+      return res.status(404).json({ status: "ERR", message: "Không tìm thấy tin tức!" });
     }
 
     return res.status(200).json({
-      status: 'OK',
-      message: 'Cập nhật tin tức thành công!',
+      status: "OK",
+      message: "Cập nhật tin tức thành công!",
       data: updatedNews,
     });
   } catch (e) {
     console.error("Error in updateNews:", e.message);
     return res.status(500).json({
-      status: 'ERROR',
-      message: 'Error updating news',
+      status: "ERROR",
+      message: "Error updating news",
       error: e.message,
     });
   }
@@ -123,112 +133,112 @@ const updateNews = async (req, res) => {
 
 // Xóa tin tức
 const deleteNews = async (req, res) => {
-    try {
-        const newsID = req.params.id;
-        if (!newsID) {
-            return res.status(400).json({
-                status: 'ERR',
-                message: 'News ID is required',
-            });
-        }
-
-        const response = await NewsService.deleteNews(newsID);
-        if (response.message === 'News not found') {
-            return res.status(404).json(response);
-        }
-
-        return res.status(200).json(response);
-    } catch (e) {
-        return res.status(500).json({
-            status: 'ERROR',
-            message: 'Error deleting news',
-            error: e.message,
-        });
+  try {
+    const newsID = req.params.id;
+    if (!newsID) {
+      return res.status(400).json({
+        status: 'ERR',
+        message: 'News ID is required',
+      });
     }
+
+    const response = await NewsService.deleteNews(newsID);
+    if (response.message === 'News not found') {
+      return res.status(404).json(response);
+    }
+
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      status: 'ERROR',
+      message: 'Error deleting news',
+      error: e.message,
+    });
+  }
 };
 
 // Lấy tất cả tin tức
 const getAllNews = async (req, res) => {
-    try {
-        const { limit, page, sort, filter } = req.query;
+  try {
+    const { limit, page, sort, filter } = req.query;
 
-        const response = await NewsService.getAllNews(
-            Number(limit) || 10,
-            Number(page) || 0,
-            sort,
-            filter
-        );
+    const response = await NewsService.getAllNews(
+      Number(limit) || 10,
+      Number(page) || 0,
+      sort,
+      filter
+    );
 
-        return res.status(200).json(response);
-    } catch (e) {
-        return res.status(500).json({
-            status: 'ERROR',
-            message: 'Error fetching news',
-            error: e.message,
-        });
-    }
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      status: 'ERROR',
+      message: 'Error fetching news',
+      error: e.message,
+    });
+  }
 };
 
 // Lấy chi tiết tin tức
 const getDetailNews = async (req, res) => {
-    try {
-        const newsID = req.params.id;
-        if (!newsID) {
-            return res.status(400).json({
-                status: 'ERR',
-                message: 'News ID is required',
-            });
-        }
-
-        const response = await NewsService.getDetailNews(newsID);
-        if (!response.data) {
-            return res.status(404).json({
-                status: 'ERR',
-                message: 'News not found',
-            });
-        }
-
-        return res.status(200).json(response);
-    } catch (e) {
-        return res.status(500).json({
-            status: 'ERROR',
-            message: 'Error fetching news details',
-            error: e.message,
-        });
+  try {
+    const newsID = req.params.id;
+    if (!newsID) {
+      return res.status(400).json({
+        status: 'ERR',
+        message: 'News ID is required',
+      });
     }
+
+    const response = await NewsService.getDetailNews(newsID);
+    if (!response.data) {
+      return res.status(404).json({
+        status: 'ERR',
+        message: 'News not found',
+      });
+    }
+
+    return res.status(200).json(response);
+  } catch (e) {
+    return res.status(500).json({
+      status: 'ERROR',
+      message: 'Error fetching news details',
+      error: e.message,
+    });
+  }
 };
 
 // Cập nhật lượt xem
 const updateView = async (req, res) => {
-    try {
-        const { id } = req.params;
+  try {
+    const { id } = req.params;
 
-        if (!id) {
-            return res.status(400).json({ message: 'Thiếu thông tin newsId.' });
-        }
-
-        const news = await News.findById(id);
-        if (!news) {
-            return res.status(404).json({ message: 'News not found' });
-        }
-
-        news.view = (news.view || 0) + 1;
-        await news.save();
-
-        res.status(200).json({
-            message: 'Cập nhật lượt xem thành công.',
-            news,
-        });
-    } catch (error) {
-        res.status(400).json({ message: error.message });
+    if (!id) {
+      return res.status(400).json({ message: 'Thiếu thông tin newsId.' });
     }
+
+    const news = await News.findById(id);
+    if (!news) {
+      return res.status(404).json({ message: 'News not found' });
+    }
+
+    news.view = (news.view || 0) + 1;
+    await news.save();
+
+    res.status(200).json({
+      message: 'Cập nhật lượt xem thành công.',
+      news,
+    });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
 };
 
 module.exports = {
-    createNews,
-    updateNews,
-    deleteNews,
-    getAllNews,
-    getDetailNews,
-    updateView
+  createNews,
+  updateNews,
+  deleteNews,
+  getAllNews,
+  getDetailNews,
+  updateView
 };

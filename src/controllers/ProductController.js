@@ -108,19 +108,23 @@ const getAllProduct = async (req, res) => {
     try {
         const { limit, page, sort, filter } = req.query;
 
+        // Chuyển đổi limit và page, đảm bảo là số hợp lệ
+        const parsedLimit = Number(limit) > 0 ? Number(limit) : 0; // Nếu không hợp lệ, dùng 0 để lấy tất cả
+        const parsedPage = Number(page) >= 0 ? Number(page) : 0;
+
         const response = await ProductService.getAllProduct(
-            Number(limit) || 10,
-            Number(page) || 0,
+            parsedLimit,
+            parsedPage,
             sort,
-            filter // Truyền thẳng `filter` vào, không parse
+            filter
         );
 
         return res.status(200).json(response);
     } catch (e) {
-        console.error('CONTROLLER ERROR:', e);
+        console.error("CONTROLLER ERROR:", e);
         return res.status(500).json({
-            status: 'ERROR',
-            message: 'Error fetching products',
+            status: "ERROR",
+            message: "Error fetching products",
             error: e.message,
         });
     }

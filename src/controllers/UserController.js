@@ -4,7 +4,7 @@ const User = require('../models/UserModel');
 
 const createUser = async (req, res) => {
     try {
-        const { email, name, password, phone, birthday, isAdmin } = req.body;
+        const { email, name, password, phone, birthday, isAdmin, description } = req.body;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         const isCheckEmail = emailRegex.test(email);
         if (!email || !name || !password || !phone || !birthday) {

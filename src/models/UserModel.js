@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
         active: { type: Boolean, default: true },
         isAdmin: { type: Boolean, default: false },
         gender: { type: String, enum: ['male', 'female', 'other'], default: 'other' },
+        description: { type: String, required: false },
 
         // Trường OTP
         resetPasswordOTP: { type: String },

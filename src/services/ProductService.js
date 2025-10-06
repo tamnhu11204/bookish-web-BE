@@ -76,51 +76,52 @@ const deleteProduct = async (id) => {
     }
 };
 
-const getAllProduct = async (limit = 10, page = 0, sort, filter) => {
+const getAllProduct = async (limit = 0, page = 0, sort, filter) => {
     try {
         const query = {};
 
-        // Logic lọc sản phẩm được cải tiến
+        // Logic lọc sản phẩm
         if (filter && Array.isArray(filter) && filter.length === 2) {
             const [field, value] = filter;
-
-            // NẾU LỌC THEO 'author' HOẶC 'category', DÙNG SO SÁNH BẰNG
-            if (field === 'author' || field === 'category') {
+            if (field === "author" || field === "category") {
                 query[field] = value;
             } else {
-                // Nếu lọc theo các trường văn bản (như 'name'), mới dùng $regex
-                query[field] = { $regex: value, $options: 'i' };
+                query[field] = { $regex: value, $options: "i" };
             }
         }
 
         // Logic sắp xếp
         let sortOption = {};
         if (sort) {
-            const sortArray = typeof sort === 'string' ? JSON.parse(sort) : sort;
+            const sortArray = typeof sort === "string" ? JSON.parse(sort) : sort;
             if (Array.isArray(sortArray) && sortArray.length === 2) {
                 sortOption[sortArray[0]] = sortArray[1];
             }
         }
 
-        // ... phần còn lại của hàm giữ nguyên ...
+        // Tính tổng số sản phẩm
         const totalProduct = await Product.countDocuments(query);
-        const products = await Product.find(query)
-            .sort(sortOption)
-            .skip(page * limit)
-            .limit(limit)
-            .populate('author')
-            .populate('category');
+
+        // Lấy sản phẩm
+        let queryBuilder = Product.find(query).sort(sortOption).populate("author").populate("category");
+
+        // Chỉ áp dụng limit và skip nếu limit > 0
+        if (limit > 0) {
+            queryBuilder = queryBuilder.limit(limit).skip(page * limit);
+        }
+
+        const products = await queryBuilder;
 
         return {
-            status: 'OK',
-            message: 'Products retrieved successfully',
+            status: "OK",
+            message: "Products retrieved successfully",
             data: products,
             total: totalProduct,
-            pageCurrent: page + 1,
-            totalPage: Math.ceil(totalProduct / limit),
+            pageCurrent: limit > 0 ? page + 1 : 1, // Nếu không có limit, pageCurrent là 1
+            totalPage: limit > 0 ? Math.ceil(totalProduct / limit) : 1, // Nếu không có limit, totalPage là 1
         };
     } catch (e) {
-        console.error('SERVICE ERROR - getAllProduct:', e);
+        console.error("SERVICE ERROR - getAllProduct:", e);
         throw new Error(e.message);
     }
 };
