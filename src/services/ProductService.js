@@ -5,7 +5,8 @@ const createProduct = async (newProduct) => {
     try {
         const { code,
             name, author, publishDate, weight, height, width, length, page, description, price,
-            discount, stock, img, star, favorite, view, publisher, language, format, unit, category, supplier
+            discount, stock, img, star, favorite, view, publisher, language, format, unit, category, supplier,isDeleted,
+        deletedAt
         } = newProduct;
 
         // Kiểm tra sản phẩm đã tồn tại

@@ -1,10 +1,12 @@
 const Product = require('../models/ProductModel');
 const ProductService = require('../services/ProductService');
+const mongoose = require('mongoose');
 
 const createProduct = async (req, res) => {
     try {
         const { name, author, publishDate, weight, height, width, length, page, description, price,
-            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier } = req.body;
+            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier ,isDeleted,
+        deletedAt } = req.body;
 
         if (!name || !author || !price) {
             return res.status(400).json({ status: 'ERR', message: 'Thiếu !' });
@@ -28,7 +30,8 @@ const createProduct = async (req, res) => {
         const imgUrls = req.files.map(file => file.path);
         const newProduct = {
             code: newCode, name, author, publishDate, weight, height, width, length, page, description, price,
-            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier, img: imgUrls
+            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier,isDeleted,
+        deletedAt, img: imgUrls
         };
 
 
@@ -271,25 +274,50 @@ const updateProductStock = async (req, res) => {
 };
 
 // Soft delete sản phẩm
-const softDeleteProduct = async (id) => {
+const softDeleteProduct = async (req, res) => {
     try {
+        const { id } = req.params;
+
+        // Kiểm tra ID hợp lệ
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({
+                status: 'ERR',
+                message: 'ID không hợp lệ!',
+            });
+        }
+
         const product = await Product.findById(id);
+
         if (!product) {
-            return { status: 'FAIL', message: 'Product not found' };
+            return res.status(404).json({
+                status: 'FAIL',
+                message: 'Không tìm thấy sản phẩm!',
+            });
         }
 
         if (product.isDeleted) {
-            return { status: 'FAIL', message: 'Product already deleted' };
+            return res.status(400).json({
+                status: 'FAIL',
+                message: 'Sản phẩm đã bị xóa mềm trước đó!',
+            });
         }
 
         product.isDeleted = true;
         product.deletedAt = new Date();
         await product.save();
 
-        return { status: 'OK', message: 'Product soft deleted successfully', data: product };
+        return res.status(200).json({
+            status: 'OK',
+            message: 'Xóa mềm sản phẩm thành công!',
+            data: product,
+        });
     } catch (e) {
         console.error('Error soft deleting product:', e);
-        throw { status: 'ERROR', message: 'Error soft deleting product', error: e.message };
+        return res.status(500).json({
+            status: 'ERROR',
+            message: 'Lỗi khi xóa mềm sản phẩm',
+            error: e.message,
+        });
     }
 };
 

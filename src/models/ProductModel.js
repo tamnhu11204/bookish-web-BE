@@ -63,6 +63,7 @@ const productSchema = new mongoose.Schema(
     },
 
      // Soft delete
+     
  
 );
 
