@@ -266,6 +266,30 @@ const updateProductStock = async (req, res) => {
     }
 };
 
+// Soft delete sản phẩm
+const softDeleteProduct = async (id) => {
+    try {
+        const product = await Product.findById(id);
+        if (!product) {
+            return { status: 'FAIL', message: 'Product not found' };
+        }
+
+        if (product.isDeleted) {
+            return { status: 'FAIL', message: 'Product already deleted' };
+        }
+
+        product.isDeleted = true;
+        product.deletedAt = new Date();
+        await product.save();
+
+        return { status: 'OK', message: 'Product soft deleted successfully', data: product };
+    } catch (e) {
+        console.error('Error soft deleting product:', e);
+        throw { status: 'ERROR', message: 'Error soft deleting product', error: e.message };
+    }
+};
+
+
 module.exports = {
     updateView,
     deleteRating,
@@ -276,5 +300,6 @@ module.exports = {
     deleteProduct,
     getAllProduct,
     getDetailProduct,
-    updateProductStock
+    updateProductStock,
+    softDeleteProduct
 };

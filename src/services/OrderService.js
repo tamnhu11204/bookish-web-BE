@@ -23,6 +23,7 @@ const createOrder = async (newOrder) => {
             note,             
             user,           
             activeNow,     
+            shipmentCode,
         } = newOrder;
 
         const session = await Order.startSession(); 
@@ -136,7 +137,7 @@ const updateActiveNow = async (orderId, data) => {
         console.log('Received data:', data);
 
         // Xử lý data: lấy active từ payload
-        const { active: activeNowValue, date } = data;
+        const { active: activeNowValue, date,shipmentCode } = data;
         if (!activeNowValue) {
             throw new Error('Invalid data format: active is required');
         }
@@ -145,6 +146,11 @@ const updateActiveNow = async (orderId, data) => {
         order.activeNow = activeNowValue;
         if (date) {
             order.date = date; // Cập nhật date nếu có
+        }
+         await order.save();
+
+        if (shipmentCode) {
+            order.shipmentCode = shipmentCode; // Cập nhật date nếu có
         }
         await order.save();
 

@@ -21,6 +21,7 @@ const createOrder = async (req, res) => {
             deliverDate,
             deliverActive,
             user,
+            shipmentCode,
         } = req.body;
         console.log('req.body', req.body);
 

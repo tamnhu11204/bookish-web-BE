@@ -26,6 +26,8 @@ const productSchema = new mongoose.Schema(
         view: { type: Number, default: 0 }, // Lượt xem
         sold: { type: Number, default: 0 },
         feedbackCount: { type: Number, default: 0 },
+        isDeleted: { type: Boolean, default: false },
+        deletedAt: { type: Date, default: null },
 
         // Định nghĩa các khóa ngoại
         publisher: {
@@ -58,7 +60,10 @@ const productSchema = new mongoose.Schema(
     },
     {
         timestamps: true,
-    }
+    },
+
+     // Soft delete
+ 
 );
 
 const Product = mongoose.model('Product', productSchema);

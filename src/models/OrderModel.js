@@ -47,6 +47,7 @@ const orderSchema = new mongoose.Schema(
             require: true
         },
         activeNow:{ type: String },
+        shipmentCode:{ type: String },
     },
     {
         timestamps: true,
