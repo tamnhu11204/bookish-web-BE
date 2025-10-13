@@ -31,10 +31,10 @@ const createCategory = async (req, res) => {
 
         // Lấy mã danh mục lớn nhất
         const lastCategory = await Category.findOne().sort({ code: -1 }).select('code');
-        let newCode = 'C0001';
+        let newCode = 'CT000001';
         if (lastCategory && lastCategory.code) {
             const lastNumber = parseInt(lastCategory.code.slice(1));
-            newCode = `C${String(lastNumber + 1).padStart(4, '0')}`;
+            newCode = `CT${String(lastNumber + 1).padStart(6, '0')}`;
         }
 
         const img = req.file ? req.file.path : req.body.existingImg;

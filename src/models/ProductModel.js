@@ -10,11 +10,9 @@ const productSchema = new mongoose.Schema(
             ref: 'Author',
             required: true
         },
-        publishDate: { type: Date }, // Ngày xuất bản không bắt buộc
+        publishYear: { type: Number }, // Ngày xuất bản không bắt buộc
         weight: { type: Number, default: 0 }, // Trọng lượng, thêm giá trị mặc định
-        height: { type: Number, default: 0 },
-        width: { type: Number, default: 0 },
-        length: { type: Number, default: 0 },
+        dimensions: { type: String, default: "" }, // Kích thước dạng chuỗi
         page: { type: Number, default: 0 }, // Số trang
         description: { type: String, default: "" }, // Mô tả
         price: { type: Number, required: true }, // Giá sản phẩm bắt buộc
@@ -43,10 +41,10 @@ const productSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Format'
         },
-        unit: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Unit'
-        },
+        // unit: {
+        //     type: mongoose.Schema.Types.ObjectId,
+        //     ref: 'Unit'
+        // },
         category: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Category',
@@ -62,9 +60,9 @@ const productSchema = new mongoose.Schema(
         timestamps: true,
     },
 
-     // Soft delete
-     
- 
+    // Soft delete
+
+
 );
 
 const Product = mongoose.model('Product', productSchema);

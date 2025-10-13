@@ -4,9 +4,9 @@ const mongoose = require('mongoose');
 
 const createProduct = async (req, res) => {
     try {
-        const { name, author, publishDate, weight, height, width, length, page, description, price,
-            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier ,isDeleted,
-        deletedAt } = req.body;
+        const { name, author, publishYear, weight, dimensions, page, description, price,
+            discount, stock, star, favorite, view, publisher, language, format, category, supplier, isDeleted,
+            deletedAt } = req.body;
 
         if (!name || !author || !price) {
             return res.status(400).json({ status: 'ERR', message: 'Thiếu !' });
@@ -29,9 +29,9 @@ const createProduct = async (req, res) => {
 
         const imgUrls = req.files.map(file => file.path);
         const newProduct = {
-            code: newCode, name, author, publishDate, weight, height, width, length, page, description, price,
-            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier,isDeleted,
-        deletedAt, img: imgUrls
+            code: newCode, name, author, publishYear, weight, dimensions, page, description, price,
+            discount, stock, star, favorite, view, publisher, language, format, category, supplier, isDeleted,
+            deletedAt, img: imgUrls
         };
 
 
@@ -48,8 +48,8 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { name, author, publishDate, weight, height, width, length, page, description, price,
-            discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier } = req.body;
+        const { name, author, publishYear, weight, dimensions, page, description, price,
+            discount, stock, star, favorite, view, publisher, language, format, category, supplier } = req.body;
 
         let updatedImgs = req.body.existingImages || [];
 
@@ -60,8 +60,8 @@ const updateProduct = async (req, res) => {
         const updatedProduct = await Product.findByIdAndUpdate(
             req.params.id,
             {
-                name, author, publishDate, weight, height, width, length, page, description, price,
-                discount, stock, star, favorite, view, publisher, language, format, unit, category, supplier, img: updatedImgs
+                name, author, publishYear, weight, dimensions, page, description, price,
+                discount, stock, star, favorite, view, publisher, language, format, category, supplier, img: updatedImgs
             },
             { new: true }
         );

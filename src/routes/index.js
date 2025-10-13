@@ -21,7 +21,6 @@ const StaticPageRouter = require('./StaticPageRouter')
 const ImportRouter = require('./ImportRouter')
 const recommendationRoutes = require('./RecommendationRouter');
 const AuthorRouter = require('./AuthorRouter');
-const LiveChatMessageRouter = require('./LiveChatMessageRouter');
 const HomepageConfigRouter = require('./HomepageConfigRouter');
 const AboutUsRouter = require('./AboutUsRouter')
 const NewsRouter = require('./NewsRouter')
@@ -49,7 +48,6 @@ const routes = (app) => {
     app.use('/api/static-page', StaticPageRouter)
     app.use('/api/imports', ImportRouter)
     app.use('/api/recommendation', recommendationRoutes);
-    app.use('/api/chat', LiveChatMessageRouter);
     app.use('/api/author', AuthorRouter);
     app.use('/api/homepage', HomepageConfigRouter);
     app.use('/api/about-us', AboutUsRouter);
