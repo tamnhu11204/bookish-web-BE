@@ -8,11 +8,12 @@ const dbName = 'test';
 
 // Hàm lấy tin tức và lưu vào MongoDB
 async function fetchAndSaveNews() {
-    const feed = await parser.parseURL('https://vnexpress.net/rss/tin-moi-nhat.rss'); // Thay URL RSS mong muốn
+    const feed = await parser.parseURL('https://vnexpress.net/rss/tin-moi-nhat.rss');
     const client = await MongoClient.connect(url);
     const db = client.db(dbName);
     const collection = db.collection('newstrend');
 
+    //đọc các thành phần cần thiết và lưu vào mongodb
     const newsItems = feed.items.map(item => ({
         title: item.title,
         link: item.link,
@@ -32,7 +33,7 @@ async function fetchAndSaveNews() {
     client.close();
 }
 
-// Lịch chạy Cron Job (ví dụ: chạy mỗi ngày lúc 2h sáng)
+// Lịch chạy Cron Job (ví dụ: chạy mỗi ngày lúc 20h)
 cron.schedule('0 20 * * *', () => {
     console.log('Chạy công việc lấy tin tức...');
     fetchAndSaveNews();
