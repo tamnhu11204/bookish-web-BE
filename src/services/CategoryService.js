@@ -1,3 +1,4 @@
+const Product = require('../models/ProductModel');
 const Category = require('./../models/CategoryModel');
 const bcryptjs = require("bcryptjs");
 
@@ -55,17 +56,24 @@ const updateCategory = (id, data) => {
 const deleteCategory = (id) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const checkCategory = await Category.findOne({ _id: id })
+            const checkCategory = await Category.findOne({ _id: id });
             if (checkCategory === null) {
                 resolve({
                     status: 'OK',
                     message: 'The Category is not defined'
-                })
+                });
+                return;
             }
-            await Category.findByIdAndDelete(id)
+
+            // Delete all products associated with the category
+            await Product.deleteMany({ category: id });
+
+            // Delete the category
+            await Category.findByIdAndDelete(id);
+
             resolve({
                 status: 'OK',
-                message: 'Delete sucessfully',
+                message: 'Category and associated products deleted successfully',
             });
         } catch (e) {
             reject(e);

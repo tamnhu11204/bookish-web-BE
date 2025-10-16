@@ -77,52 +77,116 @@ const deleteProduct = async (id) => {
     }
 };
 
-const getAllProduct = async (limit = 0, page = 0, sort, filter) => {
+const getAllProduct = async (limit = 20, page = 1, sort, filters) => {
     try {
-        const query = {};
+        const query = { isDeleted: { $ne: true } }; // Chỉ lấy sản phẩm chưa xóa
 
-        // Logic lọc sản phẩm
-        if (filter && Array.isArray(filter) && filter.length === 2) {
-            const [field, value] = filter;
-            if (field === "author" || field === "category") {
-                query[field] = value;
-            } else {
-                query[field] = { $regex: value, $options: "i" };
+        // Xử lý filters
+        if (filters) {
+            const parsedFilters = typeof filters === 'string' ? JSON.parse(filters) : filters;
+
+            // Categories (array of IDs)
+            if (parsedFilters.categories?.length) {
+                query.category = { $in: parsedFilters.categories };
+            }
+
+            // Publishers
+            if (parsedFilters.publishers?.length) {
+                query.publisher = { $in: parsedFilters.publishers };
+            }
+
+            // Authors
+            if (parsedFilters.authors?.length) {
+                query.author = { $in: parsedFilters.authors };
+            }
+
+            // Languages
+            if (parsedFilters.languages?.length) {
+                query.language = { $in: parsedFilters.languages };
+            }
+
+            // Formats
+            if (parsedFilters.formats?.length) {
+                query.format = { $in: parsedFilters.formats };
+            }
+
+            // Price ranges (array of [min, max])
+            if (parsedFilters.priceRanges?.length) {
+                const priceConditions = parsedFilters.priceRanges.map(range => {
+                    const [minStr, maxStr] = range.split('-');
+                    const min = Number(minStr);
+                    const max = maxStr === 'Infinity' ? null : Number(maxStr);
+
+                    const condition = {
+                        $expr: {
+                            $let: {
+                                vars: {
+                                    discountedPrice: {
+                                        $cond: {
+                                            if: { $gt: [{ $ifNull: ['$discount', 0] }, 0] },
+                                            then: { $multiply: ['$price', { $subtract: [1, { $divide: [{ $ifNull: ['$discount', 0] }, 100] }] }] },
+                                            else: '$price'
+                                        }
+                                    }
+                                },
+                                in: {
+                                    $and: [
+                                        { $gte: ['$$discountedPrice', min] },
+                                        // Nếu max là null (Infinity), chỉ kiểm tra min
+                                        max !== null ? { $lte: ['$$discountedPrice', max] } : true
+                                    ]
+                                }
+                            }
+                        }
+                    };
+
+                    return condition;
+                });
+
+                query.$or = priceConditions;
+            }
+
+            // Search term
+            if (parsedFilters.search) {
+                query.name = { $regex: parsedFilters.search, $options: 'i' };
             }
         }
 
-        // Logic sắp xếp
+        // Xử lý sort
         let sortOption = {};
         if (sort) {
-            const sortArray = typeof sort === "string" ? JSON.parse(sort) : sort;
-            if (Array.isArray(sortArray) && sortArray.length === 2) {
-                sortOption[sortArray[0]] = sortArray[1];
+            const [field, order] = typeof sort === 'string' ? JSON.parse(sort) : sort;
+            if (['price', 'name', 'sold', 'createdAt'].includes(field)) {
+                sortOption[field] = order === 'asc' ? 1 : -1;
             }
         }
 
-        // Tính tổng số sản phẩm
-        const totalProduct = await Product.countDocuments(query);
+        // Pagination
+        const parsedLimit = Number(limit) > 0 ? Number(limit) : 10; // Default limit
+        const parsedPage = Number(page) >= 0 ? Number(page) - 1 : 0; // Page bắt đầu từ 1 ở client
+        const skip = parsedPage * parsedLimit;
 
-        // Lấy sản phẩm
-        let queryBuilder = Product.find(query).sort(sortOption).populate("author").populate("category");
-
-        // Chỉ áp dụng limit và skip nếu limit > 0
-        if (limit > 0) {
-            queryBuilder = queryBuilder.limit(limit).skip(page * limit);
-        }
-
-        const products = await queryBuilder;
+        // Query và count song song
+        const [products, totalProduct] = await Promise.all([
+            Product.find(query)
+                .sort(sortOption)
+                .skip(skip)
+                .limit(parsedLimit)
+                .select('name price discount img category author publisher language format sold createdAt stock') // Chỉ lấy fields cần
+                .lean(), // Chuyển sang plain JS để giảm memory
+            Product.countDocuments(query)
+        ]);
 
         return {
-            status: "OK",
-            message: "Products retrieved successfully",
+            status: 'OK',
+            message: 'Products retrieved successfully',
             data: products,
             total: totalProduct,
-            pageCurrent: limit > 0 ? page + 1 : 1, // Nếu không có limit, pageCurrent là 1
-            totalPage: limit > 0 ? Math.ceil(totalProduct / limit) : 1, // Nếu không có limit, totalPage là 1
+            pageCurrent: parsedPage + 1,
+            totalPage: Math.ceil(totalProduct / parsedLimit)
         };
     } catch (e) {
-        console.error("SERVICE ERROR - getAllProduct:", e);
+        console.error('SERVICE ERROR - getAllProduct:', e);
         throw new Error(e.message);
     }
 };

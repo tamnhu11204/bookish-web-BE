@@ -111,15 +111,15 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
     try {
-        const CategoryID = req.params.id
-        if (!CategoryID) {
+        const categoryID = req.params.id;
+        if (!categoryID) {
             return res.status(200).json({
                 status: 'ERR',
                 message: 'The CategoryID is required'
             });
         }
 
-        const response = await CategoryService.deleteCategory(CategoryID);
+        const response = await CategoryService.deleteCategory(categoryID);
         return res.status(200).json(response);
     } catch (e) {
         return res.status(404).json({

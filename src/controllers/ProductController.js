@@ -109,26 +109,42 @@ const deleteProduct = async (req, res) => {
 
 const getAllProduct = async (req, res) => {
     try {
-        const { limit, page, sort, filter } = req.query;
+        const { limit = 10, page = 1, sort, filters } = req.query;
 
-        // Chuyển đổi limit và page, đảm bảo là số hợp lệ
-        const parsedLimit = Number(limit) > 0 ? Number(limit) : 0; // Nếu không hợp lệ, dùng 0 để lấy tất cả
-        const parsedPage = Number(page) >= 0 ? Number(page) : 0;
+        // Validate params
+        const parsedLimit = Number(limit) > 0 ? Number(limit) : 20;
+        const parsedPage = Number(page) >= 1 ? Number(page) : 1;
+        let parsedSort = null;
+        let parsedFilters = {};
 
-        const response = await ProductService.getAllProduct(
-            parsedLimit,
-            parsedPage,
-            sort,
-            filter
-        );
+        if (sort) {
+            try {
+                parsedSort = JSON.parse(sort); // [field, order]
+                if (!Array.isArray(parsedSort) || parsedSort.length !== 2) {
+                    throw new Error('Invalid sort format');
+                }
+            } catch (e) {
+                return res.status(400).json({ status: 'ERROR', message: 'Invalid sort format' });
+            }
+        }
+
+        if (filters) {
+            try {
+                parsedFilters = JSON.parse(filters);
+            } catch (e) {
+                return res.status(400).json({ status: 'ERROR', message: 'Invalid filters format' });
+            }
+        }
+
+        const response = await ProductService.getAllProduct(parsedLimit, parsedPage, parsedSort, parsedFilters);
 
         return res.status(200).json(response);
     } catch (e) {
-        console.error("CONTROLLER ERROR:", e);
+        console.error('CONTROLLER ERROR:', e);
         return res.status(500).json({
-            status: "ERROR",
-            message: "Error fetching products",
-            error: e.message,
+            status: 'ERROR',
+            message: 'Error fetching products',
+            error: e.message
         });
     }
 };
