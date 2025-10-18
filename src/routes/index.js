@@ -24,6 +24,7 @@ const AuthorRouter = require('./AuthorRouter');
 const HomepageConfigRouter = require('./HomepageConfigRouter');
 const AboutUsRouter = require('./AboutUsRouter')
 const NewsRouter = require('./NewsRouter')
+const SearchRouter = require('./SearchRouter')
 
 const routes = (app) => {
     app.use('/api/user', UserRouter)
@@ -52,6 +53,7 @@ const routes = (app) => {
     app.use('/api/homepage', HomepageConfigRouter);
     app.use('/api/about-us', AboutUsRouter);
     app.use('/api/news', NewsRouter);
+    app.use('/api',SearchRouter);
 }
 
 module.exports = routes;
