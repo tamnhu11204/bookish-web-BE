@@ -1,14 +1,15 @@
 const axios = require('axios');
 const Product = require('../models/ProductModel');
+const ObjectId = require('mongoose').Types.ObjectId;
 
 const searchBooks = (query) => {
     return new Promise(async (resolve, reject) => {
         try {
-            // Gửi request đến AI service
+            console.log('Query sent to AI service:', query);
             const aiResponse = await axios.post('http://localhost:8000/ai/search', { query });
-
-            const bookIds = aiResponse.data?.book_ids || aiResponse.data || [];
-
+            console.log('AI service response:', aiResponse.data);
+            const bookIds = aiResponse.data?.product_ids || [];
+            console.log('Extracted bookIds:', bookIds);
             if (!Array.isArray(bookIds) || bookIds.length === 0) {
                 return resolve({
                     status: 'OK',
@@ -16,10 +17,8 @@ const searchBooks = (query) => {
                     data: []
                 });
             }
-
-            // Truy vấn MongoDB lấy chi tiết sách
-            const books = await Book.find({ _id: { $in: bookIds } });
-
+            const books = await Product.find({ _id: { $in: bookIds } });
+            console.log('Books found in MongoDB:', books);
             resolve({
                 status: 'OK',
                 message: 'Search successful',
