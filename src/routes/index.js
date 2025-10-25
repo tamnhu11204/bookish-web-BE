@@ -55,7 +55,7 @@ const routes = (app) => {
     app.use('/api/about-us', AboutUsRouter);
     app.use('/api/news', NewsRouter);
     app.use('/api',SearchRouter);
-    app.use('/api/event',UserEventRouter);
+    app.use('/api/events',UserEventRouter);
 }
 
 module.exports = routes;
