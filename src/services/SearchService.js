@@ -7,25 +7,61 @@ const searchBooks = (query) => {
         try {
             console.log('Query sent to AI service:', query);
             const aiResponse = await axios.post('http://localhost:8000/ai/search', { query });
+
             console.log('AI service response:', aiResponse.data);
-            const bookIds = aiResponse.data?.product_ids || [];
-            console.log('Extracted bookIds:', bookIds);
-            if (!Array.isArray(bookIds) || bookIds.length === 0) {
+            const bookIdsAsString = aiResponse.data?.product_ids || [];
+
+            console.log('Extracted bookIds (as strings):', bookIdsAsString);
+
+            if (!Array.isArray(bookIdsAsString) || bookIdsAsString.length === 0) {
                 return resolve({
                     status: 'OK',
                     message: 'No results found from AI service',
                     data: []
                 });
             }
-            const books = await Product.find({ _id: { $in: bookIds } });
-            console.log('Books found in MongoDB:', books);
+
+            const bookIdsAsObjectId = bookIdsAsString
+                .map(id => {
+                    if (ObjectId.isValid(id)) {
+                        return new ObjectId(id);
+                    }
+                    console.warn(`Invalid ObjectId format detected: ${id}`);
+                    return null;
+                })
+                .filter(id => id !== null);
+
+            console.log('Mongo IDs to query (as ObjectId):', bookIdsAsObjectId);
+
+            if (bookIdsAsObjectId.length === 0) {
+                return resolve({
+                    status: 'OK',
+                    message: 'No valid book IDs to query',
+                    data: []
+                });
+            }
+            const books = await Product.find({ _id: { $in: bookIdsAsObjectId } });
+
+            console.log(`Books found in MongoDB: ${books.length} items`);
+
+            const sortedBooks = bookIdsAsObjectId.map(id =>
+                books.find(book => book._id.equals(id))
+            ).filter(book => book);
+
             resolve({
                 status: 'OK',
                 message: 'Search successful',
-                data: books
+                data: sortedBooks
             });
+
         } catch (e) {
-            console.error('Error in SearchService:', e.message);
+            if (e.response) {
+                console.error('Error from AI service:', e.response.status, e.response.data);
+            } else if (e.request) {
+                console.error('Error connecting to AI service:', e.message);
+            } else {
+                console.error('Error in SearchService logic:', e.message);
+            }
             reject(e);
         }
     });
