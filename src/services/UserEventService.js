@@ -12,6 +12,24 @@ const trackEvent = (eventData) => {
                 });
             }
 
+            // Xác định key để giới hạn: dùng userId nếu có, không thì dùng sessionId
+            const filterKey = userId ? { userId, eventType } : { sessionId, eventType };
+
+            // 1. Đếm số event hiện tại của (userId hoặc sessionId) + eventType
+            const count = await UserEvent.countDocuments(filterKey);
+
+            // 2. Nếu đã có 50 bản ghi → xóa bản ghi cũ nhất (cũ nhất = timestamp nhỏ nhất)
+            if (count >= 50) {
+                const oldestEvent = await UserEvent.findOne(filterKey)
+                    .sort({ timestamp: 1 }) // cũ nhất trước
+                    .select('_id');
+
+                if (oldestEvent) {
+                    await UserEvent.deleteOne({ _id: oldestEvent._id });
+                }
+            }
+
+            // 3. Tạo event mới
             const newEvent = await UserEvent.create({
                 eventType,
                 productId,
