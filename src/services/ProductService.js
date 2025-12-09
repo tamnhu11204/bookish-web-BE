@@ -162,18 +162,30 @@ const getAllProduct = async (limit = 20, page = 1, sort, filters) => {
         }
 
         // Pagination
-        const parsedLimit = Number(limit) > 0 ? Number(limit) : 10; // Default limit
-        const parsedPage = Number(page) >= 0 ? Number(page) - 1 : 0; // Page bắt đầu từ 1 ở client
-        const skip = parsedPage * parsedLimit;
+        let parsedLimit;
+        if (Number(limit) === 0) {
+            parsedLimit = 0; // lấy hết
+        } else {
+            parsedLimit = Number(limit) > 0 ? Number(limit) : 10;
+        }
+
+        const parsedPage = Number(page) >= 1 ? Number(page) - 1 : 0;
+
+        // Build query exec
+        let queryExec = Product.find(query)
+            .sort(sortOption)
+            .select('name price discount img category author publisher language format sold createdAt stock')
+            .lean();
+
+        // Nếu limit > 0 thì dùng phân trang
+        if (parsedLimit > 0) {
+            const skip = parsedPage * parsedLimit;
+            queryExec = queryExec.skip(skip).limit(parsedLimit);
+        }
 
         // Query và count song song
         const [products, totalProduct] = await Promise.all([
-            Product.find(query)
-                .sort(sortOption)
-                .skip(skip)
-                .limit(parsedLimit)
-                .select('name price discount img category author publisher language format sold createdAt stock') // Chỉ lấy fields cần
-                .lean(), // Chuyển sang plain JS để giảm memory
+            queryExec,
             Product.countDocuments(query)
         ]);
 
@@ -183,8 +195,9 @@ const getAllProduct = async (limit = 20, page = 1, sort, filters) => {
             data: products,
             total: totalProduct,
             pageCurrent: parsedPage + 1,
-            totalPage: Math.ceil(totalProduct / parsedLimit)
+            totalPage: parsedLimit > 0 ? Math.ceil(totalProduct / parsedLimit) : 1
         };
+
     } catch (e) {
         console.error('SERVICE ERROR - getAllProduct:', e);
         throw new Error(e.message);

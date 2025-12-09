@@ -112,7 +112,13 @@ const getAllProduct = async (req, res) => {
         const { limit = 10, page = 1, sort, filters } = req.query;
 
         // Validate params
-        const parsedLimit = Number(limit) > 0 ? Number(limit) : 20;
+        const parsedLimit =
+            limit === 'all'
+                ? 0
+                : Number(limit) > 0
+                    ? Number(limit)
+                    : 20;
+
         const parsedPage = Number(page) >= 1 ? Number(page) : 1;
         let parsedSort = null;
         let parsedFilters = {};
