@@ -30,12 +30,17 @@ const createCategory = async (req, res) => {
         }
 
         // Lấy mã danh mục lớn nhất
-        const lastCategory = await Category.findOne().sort({ code: -1 }).select('code');
-        let newCode = 'CT000001';
-        if (lastCategory && lastCategory.code) {
-            const lastNumber = parseInt(lastCategory.code.slice(1));
-            newCode = `CT${String(lastNumber + 1).padStart(6, '0')}`;
-        }
+       const lastCategory = await Category.findOne().sort({ code: -1 }).select('code');
+let newCode = 'CT000001';
+
+if (lastCategory && lastCategory.code) {
+ 
+    const lastNumber = parseInt(lastCategory.code.replace('CT', '')); 
+    
+    if (!isNaN(lastNumber)) {
+        newCode = `CT${String(lastNumber + 1).padStart(6, '0')}`;
+    }
+}
 
         const img = req.file ? req.file.path : req.body.existingImg;
         const newCategory = {
